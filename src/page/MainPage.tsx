@@ -174,7 +174,7 @@ const MainPage = () => {
         source={{
           uri: currentWeather
             ? getIconWeatherBg(currentWeather.weather[0].id ?? 0) ?? ''
-            : '',
+            : 'https://furman.top/uploads/posts/2023-05/1683219757_furman-top-p-goluboe-nebo-s-oblakami-fon-krasivo-44.jpg',
         }}
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar nameCity={currentWeather?.name ?? 'Загрузка...'} />
