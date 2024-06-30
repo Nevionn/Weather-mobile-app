@@ -57,7 +57,6 @@ const MainPage = () => {
         const data: WeatherData = await response.json();
         setCurrentWeather(data);
         setErrorStatus(null);
-        console.log(data);
       }
     } catch (error) {
       console.error('Ошибка при получении данных о погоде:', error);
@@ -65,7 +64,7 @@ const MainPage = () => {
     }
   };
 
-  function getWindDirection(degree: number) {
+  const getWindDirection = (degree: number) => {
     if (degree >= 337.5 || degree < 22.5) {
       return 'Северный';
     } else if (degree >= 22.5 && degree < 67.5) {
@@ -84,7 +83,7 @@ const MainPage = () => {
       return 'Северо-западный';
     }
     return 'Неизвестный';
-  }
+  };
 
   const WindDirection = ({degree, speed}: {degree: number; speed: number}) => {
     if (degree === undefined || speed === undefined) {
@@ -173,7 +172,9 @@ const MainPage = () => {
     <View style={styles.container}>
       <ImageBackground
         source={{
-          uri: getIconWeatherBg(currentWeather?.weather[0].id ?? 0), //weatherImage.облачно,
+          uri: currentWeather
+            ? getIconWeatherBg(currentWeather.weather[0].id ?? 0) ?? ''
+            : '',
         }}
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar nameCity={currentWeather?.name ?? 'Загрузка...'} />
