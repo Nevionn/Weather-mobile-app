@@ -20,11 +20,15 @@ const styles = StyleSheet.create({
     top: 0,
     height: 50,
     width: '100%',
-    backgroundColor: 'grey',
+    backgroundColor: 'transparent',
   },
   textCity: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 2,
   },
 });
 

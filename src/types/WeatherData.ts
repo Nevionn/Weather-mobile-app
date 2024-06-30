@@ -12,6 +12,7 @@ interface WeatherData {
   };
   weather: {
     description: string;
+    id: number;
   }[];
 }
 

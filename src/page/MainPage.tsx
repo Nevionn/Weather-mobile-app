@@ -23,13 +23,21 @@ const MainPage = () => {
 
   const weatherImage = {
     пасмурно:
-      'https://kartin.papik.pro/uploads/posts/2023-07/1689140502_kartin-papik-pro-p-kartinki-oblachnaya-pogoda-67.jpg',
+      'https://get.pxhere.com/photo/nature-cloud-sky-rain-view-atmosphere-dark-weather-storm-cumulus-thunder-clouds-thunderstorm-the-background-phenomenon-dark-clouds-after-the-storm-meteorological-phenomenon-1103365.jpg',
+    дождь:
+      'https://get.pxhere.com/photo/cloud-sky-sunlight-rain-atmosphere-weather-storm-drip-window-pane-rainy-clouds-gloomy-meteorological-phenomenon-rained-out-regentrop-atmospheric-phenomenon-atmosphere-of-earth-702768.jpg',
     гроза:
       'https://pibig.info/uploads/posts/2022-12/1670009679_5-pibig-info-p-grozovoe-nebo-oboi-oboi-6.jpg',
     облачно:
       'https://furman.top/uploads/posts/2023-05/1683219757_furman-top-p-goluboe-nebo-s-oblakami-fon-krasivo-44.jpg',
     облачноСпрояснением:
-      'https://i.pinimg.com/originals/88/08/00/880800d545d33679a14919db3f7934a8.png',
+      'https://furman.top/uploads/posts/2023-05/1683219697_furman-top-p-goluboe-nebo-s-oblakami-fon-krasivo-37.jpg',
+    чистоеНебо:
+      'https://amiel.club/uploads/posts/2022-03/1647578862_1-amiel-club-p-chistoe-nebo-kartinki-1.jpg',
+    ночноеНебоЧистое:
+      'https://i.pinimg.com/originals/e9/21/25/e9212565ed3cdcb1d321bab6721db7f8.png',
+    ночноеНебоСОблаками:
+      'https://i3.wp.com/catherineasquithgallery.com/uploads/posts/2021-02/1614454249_4-p-fon-temnoe-nebo-4.jpg?ssl=1',
   };
 
   const getWeather = async () => {
@@ -70,7 +78,7 @@ const MainPage = () => {
     <View style={styles.container}>
       <ImageBackground
         source={{
-          uri: weatherImage.гроза,
+          uri: weatherImage.ночноеНебоЧистое,
         }}
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar nameCity={currentWeather?.name ?? 'Загрузка...'} />
