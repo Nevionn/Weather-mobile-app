@@ -18,29 +18,27 @@ const MainPage = () => {
   );
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
 
-  const city: string = 'Moscow';
+  const city: string = 'Москва';
   const url: string = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
 
   const weatherImage = {
-    пасмурно:
-      'https://get.pxhere.com/photo/nature-cloud-sky-rain-view-atmosphere-dark-weather-storm-cumulus-thunder-clouds-thunderstorm-the-background-phenomenon-dark-clouds-after-the-storm-meteorological-phenomenon-1103365.jpg',
-    дождь:
-      'https://get.pxhere.com/photo/cloud-sky-sunlight-rain-atmosphere-weather-storm-drip-window-pane-rainy-clouds-gloomy-meteorological-phenomenon-rained-out-regentrop-atmospheric-phenomenon-atmosphere-of-earth-702768.jpg',
-    гроза:
-      'https://pibig.info/uploads/posts/2022-12/1670009679_5-pibig-info-p-grozovoe-nebo-oboi-oboi-6.jpg',
-    облачно:
-      'https://furman.top/uploads/posts/2023-05/1683219757_furman-top-p-goluboe-nebo-s-oblakami-fon-krasivo-44.jpg',
-    облачноСпрояснением:
-      'https://furman.top/uploads/posts/2023-05/1683219697_furman-top-p-goluboe-nebo-s-oblakami-fon-krasivo-37.jpg',
-    чистоеНебо:
-      'https://amiel.club/uploads/posts/2022-03/1647578862_1-amiel-club-p-chistoe-nebo-kartinki-1.jpg',
-    ночноеНебоЧистое:
-      'https://i.pinimg.com/originals/e9/21/25/e9212565ed3cdcb1d321bab6721db7f8.png',
-    ночноеНебоСОблаками:
-      'https://i3.wp.com/catherineasquithgallery.com/uploads/posts/2021-02/1614454249_4-p-fon-temnoe-nebo-4.jpg?ssl=1',
-    снег: '',
-    туман: '',
-    торнадо: '',
+    облачно: require('../image/cloudy-sky.jpg'),
+    облачноСпрояснением: require('../image/partly-cloudy.jpg'),
+    чистоеНебо: require('../image/clear-sky-v2.jpg'),
+    снег: require('../image/winter-sky.jpeg'),
+    туман: require('../image/fog-sky.jpg'),
+    торнадо: require('../image/tornado-sky.jpg'),
+    rain: {
+      пасмурно: require('../image/mainly-cloudy.jpg'),
+      дождь: require('../image/rainy-sky.jpg'),
+      гроза: require('../image/storm-sky.jpg'),
+    },
+    night: {
+      ночноеНебоЧистое: require('../image/night-clear-sky.png'),
+      ночноеНебоСОблаками: require('../image/night-cloudy-sky.webp'),
+      ночноеЧистоеНебоЗимой: require('../image/winter-night-clear-sky.png'),
+    },
+    ночноеДождливоеНебо: require('../image/night-rain-sky.jpg'),
   };
 
   const getWeather = async () => {
@@ -87,14 +85,17 @@ const MainPage = () => {
 
   const WindDirection = ({degree, speed}: {degree: number; speed: number}) => {
     if (degree === undefined || speed === undefined) {
-      return null; // Вернуть null или что-то другое в случае отсутствия данных
+      return null;
     }
 
     return (
       <View style={styles.compassContainer}>
         <View style={styles.compass}>
           <View
-            style={[styles.arrow, {transform: [{rotate: `${degree}deg`}]}]}
+            style={[
+              styles.arrow,
+              {transform: [{rotate: `${degree + 180}deg`}]},
+            ]}
           />
           <View style={styles.directionContainer}>
             <View style={{position: 'absolute', top: 0}}>
@@ -125,15 +126,29 @@ const MainPage = () => {
       return undefined;
     }
 
+    const currentHour = new Date().getHours();
     let bgImage: string | undefined = '';
 
-    if (weatherCode >= 200 && weatherCode <= 232) bgImage = weatherImage.гроза;
+    if (weatherCode >= 200 && weatherCode <= 232)
+      bgImage = weatherImage.rain.гроза;
     else if (weatherCode >= 300 && weatherCode <= 321) {
-      bgImage = weatherImage.дождь;
+      if (currentHour >= 23 || currentHour <= 4) {
+        bgImage = weatherImage.ночноеДождливоеНебо;
+      } else {
+        bgImage = weatherImage.rain.дождь;
+      }
     } else if (weatherCode >= 500 && weatherCode <= 531) {
-      bgImage = weatherImage.дождь;
+      if (currentHour >= 23 || currentHour <= 4) {
+        bgImage = weatherImage.ночноеДождливоеНебо;
+      } else {
+        bgImage = weatherImage.rain.дождь;
+      }
     } else if (weatherCode >= 600 && weatherCode <= 622) {
-      bgImage = weatherImage.снег;
+      if (currentHour >= 23 || currentHour <= 4) {
+        bgImage = weatherImage.night.ночноеЧистоеНебоЗимой;
+      } else {
+        bgImage = weatherImage.снег;
+      }
     } else if (weatherCode >= 701 && weatherCode <= 781) {
       bgImage = weatherImage.туман;
       if (weatherCode === 781) {
@@ -141,16 +156,28 @@ const MainPage = () => {
       }
     } else if (weatherCode >= 800 && weatherCode <= 804) {
       if (weatherCode === 800) {
-        bgImage = weatherImage.чистоеНебо;
+        if (currentHour >= 23 || currentHour <= 4) {
+          bgImage = weatherImage.night.ночноеНебоЧистое;
+        } else {
+          bgImage = weatherImage.чистоеНебо;
+        }
       } else if (weatherCode === 801) {
-        bgImage = weatherImage.облачноСпрояснением;
+        if (currentHour >= 23 || currentHour <= 4) {
+          bgImage = weatherImage.night.ночноеНебоСОблаками;
+        } else {
+          bgImage = weatherImage.облачноСпрояснением;
+        }
       } else if (weatherCode === 802 || weatherCode === 803) {
-        bgImage = weatherImage.облачно;
+        if (currentHour >= 23 || currentHour <= 4) {
+          bgImage = weatherImage.night.ночноеНебоСОблаками;
+        } else {
+          bgImage = weatherImage.облачно;
+        }
       } else {
-        bgImage = weatherImage.пасмурно;
+        bgImage = weatherImage.rain.пасмурно;
       }
     } else {
-      // handle default case if needed
+      bgImage = '';
     }
 
     return bgImage || undefined;
@@ -171,11 +198,11 @@ const MainPage = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={{
-          uri: currentWeather
-            ? getIconWeatherBg(currentWeather.weather[0].id ?? 0) ?? ''
-            : 'https://furman.top/uploads/posts/2023-05/1683219757_furman-top-p-goluboe-nebo-s-oblakami-fon-krasivo-44.jpg',
-        }}
+        source={
+          currentWeather
+            ? getIconWeatherBg(currentWeather.weather[0].id ?? '')
+            : weatherImage.облачно
+        }
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar nameCity={currentWeather?.name ?? 'Загрузка...'} />
       <View style={styles.mainWeatherInfoItem}>
@@ -183,11 +210,9 @@ const MainPage = () => {
           {currentWeather?.main.temp !== undefined
             ? `${Math.round(currentWeather.main.temp)}°C`
             : ''}
-          {/* 29°C */}
         </Text>
         <Text style={styles.text}>
           {currentWeather?.weather[0].description}
-          {/* {'облачно с прояснениями'} */}
         </Text>
         <Text style={styles.text}>{errorStatus}</Text>
       </View>
