@@ -1,7 +1,3 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
-  "compilerOptions": {
-    // дополнительные опции компилятора, если они нужны
-  },
-  "include": ["src", "images.d.ts"]
+  "extends": "@react-native/typescript-config/tsconfig.json"
 }
