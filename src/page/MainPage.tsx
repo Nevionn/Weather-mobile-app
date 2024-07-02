@@ -94,7 +94,7 @@ const MainPage = () => {
           <View
             style={[
               styles.arrow,
-              {transform: [{rotate: `${degree + 180}deg`}]},
+              {transform: [{rotate: `${(degree + 180) % 360}deg`}]},
             ]}
           />
           <View style={styles.directionContainer}>
@@ -183,17 +183,17 @@ const MainPage = () => {
     return bgImage || undefined;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await getWeather();
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await getWeather();
+  //   };
 
-    fetchData();
+  //   fetchData();
 
-    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+  //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
 
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <View style={styles.container}>
