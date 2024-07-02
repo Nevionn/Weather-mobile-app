@@ -6,7 +6,7 @@ const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
   return (
     <>
       <View style={styles.navibar}>
-        <Text style={styles.textCity}>{'Москва'}</Text>
+        <Text style={styles.textCity}>{nameCity}</Text>
       </View>
     </>
   );

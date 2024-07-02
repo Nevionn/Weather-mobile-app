@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
+import {WindDirection} from '../assets/windDirection';
+import {getIconWeatherBg} from '../assets/fonWeatherBg';
 
 const MainPage = () => {
   const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
@@ -62,127 +64,6 @@ const MainPage = () => {
     }
   };
 
-  const getWindDirection = (degree: number) => {
-    if (degree >= 337.5 || degree < 22.5) {
-      return 'Северный';
-    } else if (degree >= 22.5 && degree < 67.5) {
-      return 'Северо-восточный';
-    } else if (degree >= 67.5 && degree < 112.5) {
-      return 'Восточный';
-    } else if (degree >= 112.5 && degree < 157.5) {
-      return 'Юго-восточный';
-    } else if (degree >= 157.5 && degree < 202.5) {
-      return 'Южный';
-    } else if (degree >= 202.5 && degree < 247.5) {
-      return 'Юго-западный';
-    } else if (degree >= 247.5 && degree < 292.5) {
-      return 'Западный';
-    } else if (degree >= 292.5 && degree < 337.5) {
-      return 'Северо-западный';
-    }
-    return 'Неизвестный';
-  };
-
-  const WindDirection = ({degree, speed}: {degree: number; speed: number}) => {
-    if (degree === undefined || speed === undefined) {
-      return null;
-    }
-
-    return (
-      <View style={styles.compassContainer}>
-        <View style={styles.compass}>
-          <View
-            style={[
-              styles.arrow,
-              {transform: [{rotate: `${(degree + 180) % 360}deg`}]},
-            ]}
-          />
-          <View style={styles.directionContainer}>
-            <View style={{position: 'absolute', top: 0}}>
-              <Text style={styles.textDirectionCompas}>С</Text>
-            </View>
-            <View style={{position: 'absolute', bottom: 0}}>
-              <Text style={styles.textDirectionCompas}>Ю</Text>
-            </View>
-            <View style={{position: 'absolute', right: 0, marginTop: 36}}>
-              <Text style={styles.textDirectionCompas}>В</Text>
-            </View>
-            <View style={{position: 'absolute', left: 0, marginTop: 36}}>
-              <Text style={styles.textDirectionCompas}>З</Text>
-            </View>
-          </View>
-        </View>
-        <Text style={styles.text}>
-          {getWindDirection(degree)}
-          {'\n'}
-          {speed} м/с
-        </Text>
-      </View>
-    );
-  };
-
-  const getIconWeatherBg = (weatherCode: number): string | undefined => {
-    if (weatherCode === undefined || weatherCode === null) {
-      return undefined;
-    }
-
-    const currentHour = new Date().getHours();
-    let bgImage: string | undefined = '';
-
-    if (weatherCode >= 200 && weatherCode <= 232)
-      bgImage = weatherImage.rain.гроза;
-    else if (weatherCode >= 300 && weatherCode <= 321) {
-      if (currentHour >= 23 || currentHour <= 4) {
-        bgImage = weatherImage.ночноеДождливоеНебо;
-      } else {
-        bgImage = weatherImage.rain.дождь;
-      }
-    } else if (weatherCode >= 500 && weatherCode <= 531) {
-      if (currentHour >= 23 || currentHour <= 4) {
-        bgImage = weatherImage.ночноеДождливоеНебо;
-      } else {
-        bgImage = weatherImage.rain.дождь;
-      }
-    } else if (weatherCode >= 600 && weatherCode <= 622) {
-      if (currentHour >= 23 || currentHour <= 4) {
-        bgImage = weatherImage.night.ночноеЧистоеНебоЗимой;
-      } else {
-        bgImage = weatherImage.снег;
-      }
-    } else if (weatherCode >= 701 && weatherCode <= 781) {
-      bgImage = weatherImage.туман;
-      if (weatherCode === 781) {
-        bgImage = weatherImage.торнадо;
-      }
-    } else if (weatherCode >= 800 && weatherCode <= 804) {
-      if (weatherCode === 800) {
-        if (currentHour >= 23 || currentHour <= 4) {
-          bgImage = weatherImage.night.ночноеНебоЧистое;
-        } else {
-          bgImage = weatherImage.чистоеНебо;
-        }
-      } else if (weatherCode === 801) {
-        if (currentHour >= 23 || currentHour <= 4) {
-          bgImage = weatherImage.night.ночноеНебоСОблаками;
-        } else {
-          bgImage = weatherImage.облачноСпрояснением;
-        }
-      } else if (weatherCode === 802 || weatherCode === 803) {
-        if (currentHour >= 23 || currentHour <= 4) {
-          bgImage = weatherImage.night.ночноеНебоСОблаками;
-        } else {
-          bgImage = weatherImage.облачно;
-        }
-      } else {
-        bgImage = weatherImage.rain.пасмурно;
-      }
-    } else {
-      bgImage = '';
-    }
-
-    return bgImage || undefined;
-  };
-
   // useEffect(() => {
   //   const fetchData = async () => {
   //     await getWeather();
@@ -200,8 +81,8 @@ const MainPage = () => {
       <ImageBackground
         source={
           currentWeather
-            ? getIconWeatherBg(currentWeather.weather[0].id ?? '')
-            : weatherImage.облачно
+            ? getIconWeatherBg(currentWeather.weather[0].id ?? '', weatherImage)
+            : weatherImage.снег
         }
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar nameCity={currentWeather?.name ?? 'Загрузка...'} />
@@ -209,7 +90,7 @@ const MainPage = () => {
         <Text style={styles.tempText}>
           {currentWeather?.main.temp !== undefined
             ? `${Math.round(currentWeather.main.temp)}°C`
-            : ''}
+            : '30°C'}
         </Text>
         <Text style={styles.text}>
           {currentWeather?.weather[0].description}
@@ -292,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 5,
     borderRadius: 10,
-    backgroundColor: '#C2D9F5',
+    backgroundColor: 'rgba(192,217,245, 0.6)',
   },
   compassContainer: {
     height: '90%',
@@ -301,47 +182,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 15,
     borderRadius: 10,
-    backgroundColor: '#C2D9F5',
-  },
-  compass: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-    backgroundColor: 'transparent',
-  },
-  arrow: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 5,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 5,
-    borderRightColor: 'transparent',
-    borderBottomWidth: 20,
-    borderBottomColor: 'red',
-  },
-  directionContainer: {
-    position: 'absolute',
-    top: 2,
-    bottom: 2,
-    left: 2,
-    right: 2,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  directionText: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
+    backgroundColor: 'rgba(192,217,245, 0.6)',
   },
   text: {
     color: 'white',
     fontSize: 22,
     textAlign: 'center',
+    fontWeight: 'bold',
     textShadowColor: 'black',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 2,
@@ -349,9 +196,6 @@ const styles = StyleSheet.create({
   tempText: {
     color: 'white',
     fontSize: 60,
-  },
-  textDirectionCompas: {
-    color: 'white',
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
