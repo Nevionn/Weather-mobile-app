@@ -68,13 +68,13 @@ export const WindDirection = ({
 
 const styles = StyleSheet.create({
   compassContainer: {
-    height: '90%',
+    height: '91%',
     width: 170,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 15,
     borderRadius: 10,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(192,217,245, 0.6)',
   },
   compass: {
     width: 100,

@@ -82,7 +82,7 @@ const MainPage = () => {
         source={
           currentWeather
             ? getIconWeatherBg(currentWeather.weather[0].id ?? '', weatherImage)
-            : weatherImage.снег
+            : weatherImage.облачно
         }
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar nameCity={currentWeather?.name ?? 'Загрузка...'} />
@@ -99,17 +99,14 @@ const MainPage = () => {
       </View>
       <View style={styles.gridContainer}>
         <View style={styles.paramsGrid}>
-          <View style={styles.compassContainer}>
-            <WindDirection
-              degree={currentWeather?.wind.deg ?? 0}
-              speed={currentWeather?.wind.speed ?? 0}
-            />
-          </View>
+          <WindDirection
+            degree={currentWeather?.wind.deg ?? 0}
+            speed={currentWeather?.wind.speed ?? 0}
+          />
         </View>
         <View style={styles.paramsGrid}>
           <View style={styles.itemGrid}>
             <Text style={styles.text}>
-              {' '}
               ощущается{'\n'}
               {currentWeather?.main.feels_like}°C
             </Text>
@@ -131,10 +128,7 @@ const MainPage = () => {
     </View>
   );
 };
-// {currentWeather?.wind.speed} WindDirection degree={243} speed={3.44}
-// {currentWeather?.main.feels_like} ощущается как 29°C
-// {currentWeather?.clouds.all} облачность{'\n'}12%
-// {currentWeather?.main.humidity} влажность{'\n'}1%
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -172,15 +166,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
-    borderRadius: 10,
-    backgroundColor: 'rgba(192,217,245, 0.6)',
-  },
-  compassContainer: {
-    height: '90%',
-    width: 170,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 15,
     borderRadius: 10,
     backgroundColor: 'rgba(192,217,245, 0.6)',
   },
