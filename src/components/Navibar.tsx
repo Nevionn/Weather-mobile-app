@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
+import ModalSettings from './modalWindow/ModalSettings';
 
 const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -27,6 +28,7 @@ const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
           <SvgSettings />
         </TouchableOpacity>
       </View>
+      <ModalSettings isVisible={isModalVisible} onClose={closeSettingsMenu} />
     </>
   );
 };
