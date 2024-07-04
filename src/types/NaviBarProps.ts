@@ -1,5 +1,6 @@
 interface NaviBarProps {
-  nameCity: string;
+  // nameCity: string;
+  onCitySelect: (city: string) => void;
 }
 
 export default NaviBarProps;

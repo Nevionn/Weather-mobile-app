@@ -5,9 +5,10 @@ import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
 import ModalSelectCity from './modalWindow/ModalSelectCity';
 
-const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
+const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
   const [isAddCityModalVisible, setIsAddCityModalVisible] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('');
 
   const openSettingsMenu = () => {
     setIsSettingsModalVisible(true);
@@ -25,6 +26,12 @@ const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
     setIsAddCityModalVisible(false);
   };
 
+  const handleCitySelect = (city: string) => {
+    setSelectedCity(city);
+    onCitySelect(city); // Передаем выбранный город в MainPage
+    closeSelectCityModal(); // Закрываем модальное окно после выбора города
+  };
+
   return (
     <>
       <View style={styles.navibar}>
@@ -33,7 +40,7 @@ const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
           style={styles.touchArea}>
           <Text style={styles.textAddNewCity}>+</Text>
         </TouchableOpacity>
-        <Text style={styles.textCity}>{nameCity}</Text>
+        <Text style={styles.textCity}>{selectedCity}</Text>
         <TouchableOpacity
           onPress={() => openSettingsMenu()}
           style={styles.touchArea}>
@@ -47,6 +54,7 @@ const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
       <ModalSelectCity
         isVisible={isAddCityModalVisible}
         onClose={closeSelectCityModal}
+        onCitySelect={handleCitySelect}
       />
     </>
   );

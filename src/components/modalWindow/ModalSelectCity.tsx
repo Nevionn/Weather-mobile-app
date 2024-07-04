@@ -1,9 +1,49 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  FlatList,
+} from 'react-native';
 import {COLOR} from '../../assets/colorTheme';
 import ModalAddCityProps from '../../types/ModalAddCityProps';
 
-const ModalSelectCity: React.FC<ModalAddCityProps> = ({isVisible, onClose}) => {
+const cities = [
+  'Москва',
+  'Санкт-Петербург',
+  'Новосибирск',
+  'Екатеринбург',
+  'Казань',
+  'Нижний Новгород',
+  'Челябинск',
+  'Самара',
+  'Омск',
+  'Ростов-на-Дону',
+];
+
+const ModalSelectCity: React.FC<ModalAddCityProps> = ({
+  isVisible,
+  onClose,
+  onCitySelect,
+}) => {
+  const [searchText, setSearchText] = useState('');
+  const [filteredCities, setFilteredCities] = useState(cities);
+
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    setFilteredCities(
+      cities.filter(city => city.toLowerCase().includes(text.toLowerCase())),
+    );
+  };
+
+  const handleCitySelect = (city: string) => {
+    onCitySelect(city);
+    onClose();
+  };
+
   return (
     <View style={styles.container}>
       <Modal
@@ -20,6 +60,24 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({isVisible, onClose}) => {
               backgroundColor: COLOR.SECONDARY_COLOR,
             }}>
             <Text style={styles.textHead}>Выберите город</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Введите название города"
+              placeholderTextColor="#ccc"
+              value={searchText}
+              onChangeText={handleSearch}
+            />
+            <FlatList
+              data={filteredCities}
+              keyExtractor={item => item}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.cityItem}
+                  onPress={() => handleCitySelect(item)}>
+                  <Text style={styles.cityText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
             <TouchableOpacity
               style={{
                 ...styles.openButton,
@@ -47,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    height: 245,
+    height: '70%',
     width: '80%',
     borderRadius: 20,
     justifyContent: 'center',
@@ -60,11 +118,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    padding: 20,
   },
   openButton: {
     borderRadius: 20,
     padding: 8,
     elevation: 2,
+    marginTop: 20,
   },
   textButton: {
     color: 'white',
@@ -77,12 +137,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  developer: {
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 20,
+    paddingLeft: 10,
     color: 'white',
+    width: '100%',
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+  cityItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  cityText: {
     color: 'white',
   },
 });
