@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 import MainPage from './src/page/MainPage';
 
+export const APP_VERSION = '1.0.0';
 const App = () => {
   return (
     <>
@@ -16,7 +9,5 @@ const App = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default App;
