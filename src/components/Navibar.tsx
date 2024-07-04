@@ -3,22 +3,34 @@ import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
+import ModalSelectCity from './modalWindow/ModalSelectCity';
 
 const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
+  const [isAddCityModalVisible, setIsAddCityModalVisible] = useState(false);
 
   const openSettingsMenu = () => {
-    setIsModalVisible(true);
+    setIsSettingsModalVisible(true);
   };
 
   const closeSettingsMenu = () => {
-    setIsModalVisible(false);
+    setIsSettingsModalVisible(false);
+  };
+
+  const openSelectCityModal = () => {
+    setIsAddCityModalVisible(true);
+  };
+
+  const closeSelectCityModal = () => {
+    setIsAddCityModalVisible(false);
   };
 
   return (
     <>
       <View style={styles.navibar}>
-        <TouchableOpacity style={styles.touchArea}>
+        <TouchableOpacity
+          onPress={() => openSelectCityModal()}
+          style={styles.touchArea}>
           <Text style={styles.textAddNewCity}>+</Text>
         </TouchableOpacity>
         <Text style={styles.textCity}>{nameCity}</Text>
@@ -28,7 +40,14 @@ const NaviBar: React.FC<NaviBarProps> = ({nameCity}) => {
           <SvgSettings />
         </TouchableOpacity>
       </View>
-      <ModalSettings isVisible={isModalVisible} onClose={closeSettingsMenu} />
+      <ModalSettings
+        isVisible={isSettingsModalVisible}
+        onClose={closeSettingsMenu}
+      />
+      <ModalSelectCity
+        isVisible={isAddCityModalVisible}
+        onClose={closeSelectCityModal}
+      />
     </>
   );
 };
