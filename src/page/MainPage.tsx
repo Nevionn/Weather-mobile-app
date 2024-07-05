@@ -101,7 +101,7 @@ const MainPage = () => {
         <Text style={styles.text}>
           {currentWeather?.weather[0].description}
         </Text>
-        <Text style={styles.text}>{errorStatus}</Text>
+        <Text style={styles.textError}>{errorStatus}</Text>
       </View>
       <View style={styles.gridContainer}>
         <View style={styles.paramsGrid}>
@@ -183,6 +183,12 @@ const styles = StyleSheet.create({
     textShadowColor: 'black',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 2,
+  },
+  textError: {
+    color: 'red',
+    fontSize: 22,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   tempText: {
     color: 'white',

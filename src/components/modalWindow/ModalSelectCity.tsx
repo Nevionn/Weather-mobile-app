@@ -12,16 +12,16 @@ import {COLOR} from '../../assets/colorTheme';
 import ModalAddCityProps from '../../types/ModalAddCityProps';
 
 const cities = [
-  'Москва',
-  'Санкт-Петербург',
-  'Новосибирск',
   'Екатеринбург',
   'Казань',
+  'Москва',
   'Нижний Новгород',
-  'Челябинск',
-  'Самара',
+  'Новосибирск',
   'Омск',
   'Ростов-на-Дону',
+  'Самара',
+  'Санкт-Петербург',
+  'Челябинск',
 ];
 
 const ModalSelectCity: React.FC<ModalAddCityProps> = ({
@@ -41,6 +41,8 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
 
   const handleCitySelect = (city: string) => {
     onCitySelect(city);
+    setSearchText('');
+    setFilteredCities(cities);
     onClose();
   };
 
@@ -78,14 +80,24 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
                 </TouchableOpacity>
               )}
             />
-            <TouchableOpacity
-              style={{
-                ...styles.openButton,
-                backgroundColor: COLOR.BUTTON_COLOR,
-              }}
-              onPress={() => onClose()}>
-              <Text style={styles.textButton}>Закрыть</Text>
-            </TouchableOpacity>
+            <View style={styles.itemForButtons}>
+              <TouchableOpacity
+                style={{
+                  ...styles.openButton,
+                  backgroundColor: COLOR.BUTTON_COLOR,
+                }}
+                onPress={() => onClose()}>
+                <Text style={styles.textButton}>Закрыть</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...styles.openButton,
+                  backgroundColor: COLOR.BUTTON_COLOR,
+                }}
+                onPress={() => handleCitySelect(searchText)}>
+                <Text style={styles.textButton}>Принять</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -120,11 +132,17 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 20,
   },
+  itemForButtons: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   openButton: {
     borderRadius: 20,
     padding: 8,
     elevation: 2,
     marginTop: 20,
+    marginHorizontal: 10,
   },
   textButton: {
     color: 'white',
@@ -149,8 +167,10 @@ const styles = StyleSheet.create({
   },
   cityItem: {
     padding: 10,
+    width: 300,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor: 'transparent',
   },
   cityText: {
     color: 'white',

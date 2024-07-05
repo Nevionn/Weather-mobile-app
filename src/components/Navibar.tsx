@@ -29,7 +29,7 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const handleCitySelect = (city: string) => {
     setSelectedCity(city);
     onCitySelect(city); // Передаем выбранный город в MainPage
-    closeSelectCityModal(); // Закрываем модальное окно после выбора города
+    closeSelectCityModal();
   };
 
   return (
