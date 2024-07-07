@@ -8,6 +8,7 @@ import {
   View,
   ImageBackground,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {WindDirection} from '../assets/windDirection';
@@ -69,18 +70,49 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    if (!city) return;
-
-    const fetchData = async () => {
-      await getWeather();
+    const loadCity = async () => {
+      try {
+        const savedCity = await AsyncStorage.getItem('city');
+        if (savedCity) {
+          setCity(savedCity);
+        } else {
+          console.log('значение не найдено');
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке city из хранилища:', error);
+      }
     };
 
-    fetchData();
+    loadCity();
+  }, []);
 
-    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+  useEffect(() => {
+    const saveCity = async () => {
+      try {
+        await AsyncStorage.setItem('city', city);
+      } catch (error) {
+        console.error('Ошибка при сохранении city в хранилище:', error);
+      }
+    };
 
-    return () => clearInterval(intervalId);
+    if (city) {
+      saveCity();
+    }
   }, [city]);
+
+  // useEffect(() => {
+  //   if (!city) return;
+
+  //   const fetchData = async () => {
+  //     await getWeather();
+  //   };
+
+  //   fetchData();
+
+  //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+
+  //   return () => clearInterval(intervalId);
+  // }, [city]);
 
   return (
     <View style={styles.container}>

@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
@@ -31,6 +32,23 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
     onCitySelect(city); // Передаем выбранный город в MainPage
     closeSelectCityModal();
   };
+
+  useEffect(() => {
+    const loadCity = async () => {
+      try {
+        const savedCity = await AsyncStorage.getItem('city');
+        if (savedCity) {
+          setSelectedCity(savedCity);
+        } else {
+          console.log('значение не найдено');
+        }
+      } catch (error) {
+        console.error('Failed to load city from storage:', error);
+      }
+    };
+
+    loadCity();
+  }, []);
 
   return (
     <>

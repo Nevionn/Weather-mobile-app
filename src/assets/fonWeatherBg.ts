@@ -32,7 +32,7 @@ export const getIconWeatherBg = (
     }
   } else if (weatherCode >= 701 && weatherCode <= 781) {
     bgImage = weatherObj.туман;
-    if (weatherCode === 781) {
+    if (weatherCode === 781 || weatherCode === 771) {
       bgImage = weatherObj.торнадо;
     }
   } else if (weatherCode >= 800 && weatherCode <= 804) {
