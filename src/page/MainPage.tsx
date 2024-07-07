@@ -87,22 +87,27 @@ const MainPage = () => {
     }
   }, [city]);
 
-  useEffect(() => {
-    if (!city) return;
+  // useEffect(() => {
+  //   if (!city) return;
 
-    const fetchData = async () => {
-      await getWeather();
-    };
+  //   const fetchData = async () => {
+  //     await getWeather();
+  //   };
 
-    fetchData();
+  //   fetchData();
 
-    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+  //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
 
-    return () => clearInterval(intervalId);
-  }, [city]);
+  //   return () => clearInterval(intervalId);
+  // }, [city]);
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <ImageBackground
         source={
           currentWeather
