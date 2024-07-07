@@ -16,6 +16,8 @@ interface WeatherData {
     description: string;
     id: number;
   }[];
+  dt: number;
+  timezone: number;
 }
 
 export default WeatherData;

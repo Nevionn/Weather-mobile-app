@@ -13,6 +13,7 @@ import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {WindDirection} from '../assets/windDirection';
 import {getIconWeatherBg} from '../assets/fonWeatherBg';
+import {weatherImage} from '../assets/objectWeatherImage';
 
 const MainPage = () => {
   const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
@@ -28,26 +29,6 @@ const MainPage = () => {
     setCity(_city);
   };
 
-  const weatherImage = {
-    облачно: require('../image/cloudy-sky.jpg'),
-    облачноСпрояснением: require('../image/partly-cloudy.jpg'),
-    чистоеНебо: require('../image/clear-sky-v2.jpg'),
-    снег: require('../image/winter-sky.jpeg'),
-    туман: require('../image/fog-sky.jpg'),
-    торнадо: require('../image/tornado-sky.jpg'),
-    rain: {
-      пасмурно: require('../image/mainly-cloudy.jpg'),
-      дождь: require('../image/rainy-sky.jpg'),
-      гроза: require('../image/storm-sky.jpg'),
-    },
-    night: {
-      ночноеНебоЧистое: require('../image/night-clear-sky.png'),
-      ночноеНебоСОблаками: require('../image/night-cloudy-sky.webp'),
-      ночноеЧистоеНебоЗимой: require('../image/winter-night-clear-sky.png'),
-    },
-    ночноеДождливоеНебо: require('../image/night-rain-sky.jpg'),
-  };
-
   const getWeather = async () => {
     try {
       const response = await fetch(url);
@@ -60,6 +41,7 @@ const MainPage = () => {
         }
       } else {
         const data: WeatherData = await response.json();
+
         setCurrentWeather(data);
         setErrorStatus(null);
       }
@@ -119,7 +101,12 @@ const MainPage = () => {
       <ImageBackground
         source={
           currentWeather
-            ? getIconWeatherBg(currentWeather.weather[0].id ?? '', weatherImage)
+            ? getIconWeatherBg(
+                currentWeather.weather[0].id ?? '',
+                weatherImage,
+                currentWeather.dt,
+                currentWeather.timezone,
+              )
             : weatherImage.облачно
         }
         style={styles.backgroundImage}></ImageBackground>

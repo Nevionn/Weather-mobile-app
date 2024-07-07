@@ -3,12 +3,16 @@ import WeatherImages from '../types/WeatherImages';
 export const getIconWeatherBg = (
   weatherCode: number,
   weatherObj: WeatherImages,
+  dt: number,
+  timezone: number,
 ): string | undefined => {
   if (weatherCode === undefined || weatherCode === null) {
     return undefined;
   }
 
-  const currentHour = new Date().getHours();
+  const currentTimeInRegion = new Date((dt + timezone) * 1000);
+  const currentHour = currentTimeInRegion.getUTCHours();
+
   let bgImage: string | undefined = '';
 
   if (weatherCode >= 200 && weatherCode <= 232) bgImage = weatherObj.rain.гроза;
