@@ -46,8 +46,13 @@ const MainPage = () => {
         setErrorStatus(null);
       }
     } catch (error) {
-      console.error('Ошибка при получении данных о погоде:', error);
-      setErrorStatus('Ошибка при получении данных о погоде');
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('Проблема с интернет-соединением:', error);
+        setErrorStatus('Проблема с интернет-соединением');
+      } else {
+        console.error('Ошибка при получении данных о погоде:', error);
+        setErrorStatus('Ошибка при получении данных о погоде');
+      }
     }
   };
 
@@ -82,19 +87,19 @@ const MainPage = () => {
     }
   }, [city]);
 
-  // useEffect(() => {
-  //   if (!city) return;
+  useEffect(() => {
+    if (!city) return;
 
-  //   const fetchData = async () => {
-  //     await getWeather();
-  //   };
+    const fetchData = async () => {
+      await getWeather();
+    };
 
-  //   fetchData();
+    fetchData();
 
-  //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
 
-  //   return () => clearInterval(intervalId);
-  // }, [city]);
+    return () => clearInterval(intervalId);
+  }, [city]);
 
   return (
     <View style={styles.container}>
