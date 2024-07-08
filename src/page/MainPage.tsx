@@ -23,7 +23,7 @@ const MainPage = () => {
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [city, setCity] = useState<string>('');
 
-  const url: string = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
+  const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
 
   const handleCitySelect = (_city: string) => {
     setCity(_city);
@@ -87,19 +87,19 @@ const MainPage = () => {
     }
   }, [city]);
 
-  // useEffect(() => {
-  //   if (!city) return;
+  useEffect(() => {
+    if (!city) return;
 
-  //   const fetchData = async () => {
-  //     await getWeather();
-  //   };
+    const fetchData = async () => {
+      await getWeather();
+    };
 
-  //   fetchData();
+    fetchData();
 
-  //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
 
-  //   return () => clearInterval(intervalId);
-  // }, [city]);
+    return () => clearInterval(intervalId);
+  }, [city]);
 
   return (
     <View style={styles.container}>
