@@ -1,19 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  ImageBackground,
-} from 'react-native';
+import {StatusBar, StyleSheet, Text, View, ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {WindDirection} from '../assets/windDirection';
 import {getIconWeatherBg} from '../assets/fonWeatherBg';
 import {weatherImage} from '../assets/objectWeatherImage';
+import {convertTimeStamp} from '../assets/converTimeStamp';
+import DaylightInfo from '../components/DaylightInfo';
+import {getDaylightDuration} from '../assets/dailyLightDuration';
 
 const MainPage = () => {
   const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
@@ -22,7 +17,13 @@ const MainPage = () => {
   );
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [city, setCity] = useState<string>('');
+  let sr: any = '00:44';
+  let ss: any = '22:11';
 
+  if (currentWeather && currentWeather.sys) {
+    sr = convertTimeStamp(currentWeather.sys.sunrise);
+    ss = convertTimeStamp(currentWeather.sys.sunset);
+  }
   const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
 
   const handleCitySelect = (_city: string) => {
@@ -41,7 +42,6 @@ const MainPage = () => {
         }
       } else {
         const data: WeatherData = await response.json();
-
         setCurrentWeather(data);
         setErrorStatus(null);
       }
@@ -101,6 +101,11 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, [city]);
 
+  const currentTime = new Date().toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -122,10 +127,15 @@ const MainPage = () => {
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar onCitySelect={handleCitySelect} />
       <View style={styles.mainWeatherInfoItem}>
-        <Text style={styles.tempText}>
+        <Text
+          style={
+            currentWeather?.main?.temp !== undefined
+              ? styles.tempText
+              : styles.text
+          }>
           {currentWeather?.main.temp !== undefined
             ? `${Math.round(currentWeather.main.temp)}°C`
-            : '30°C'}
+            : 'Загрузка'}
         </Text>
         <Text style={styles.text}>
           {currentWeather?.weather[0].description}
@@ -159,6 +169,19 @@ const MainPage = () => {
             </Text>
           </View>
         </View>
+        <DaylightInfo
+          sunrise={sr}
+          sunset={ss}
+          daylightDuration={
+            currentWeather?.sys?.sunrise && currentWeather?.sys?.sunset
+              ? getDaylightDuration(
+                  currentWeather.sys.sunrise,
+                  currentWeather.sys.sunset,
+                )
+              : ''
+          }
+          currentTime={currentTime}
+        />
       </View>
     </View>
   );
