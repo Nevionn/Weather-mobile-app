@@ -17,7 +17,7 @@ const MainPage = () => {
   );
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [city, setCity] = useState<string>('');
-  let sr: any = '00:44';
+  let sr: any = '03:44';
   let ss: any = '22:11';
 
   if (currentWeather && currentWeather.sys) {

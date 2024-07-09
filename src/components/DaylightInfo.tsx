@@ -17,10 +17,20 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
   const sunriseTime = parseTime(sunrise);
   const sunsetTime = parseTime(sunset);
   const current = parseTime(currentTime);
+  // const current = 18;
 
   const t = (current - sunriseTime) / (sunsetTime - sunriseTime);
-  const cx = 10 + t * 180;
-  const cy = 80 - 70 * Math.sin(Math.PI * t);
+  console.log(
+    `sunriseTime: ${sunriseTime}, sunsetTime: ${sunsetTime}, current: ${current}, t: ${t}`,
+  );
+
+  // Ограничение значения t диапазоном от 0 до 1
+  const clampedT = Math.max(0, Math.min(1, t));
+
+  const cx = 10 + clampedT * 180;
+  const cy = 80 - 70 * Math.sin(Math.PI * clampedT);
+  console.log(`cx: ${cx}, cy: ${cy}`);
+
   return (
     <View style={styles.container}>
       <Svg height="80" width="200">
