@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
@@ -29,12 +36,31 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const handleCitySelect = (city: string) => {
     setSelectedCity(city);
     onCitySelect(city); // Передаем выбранный город в MainPage
-    closeSelectCityModal(); // Закрываем модальное окно после выбора города
+    closeSelectCityModal();
   };
+
+  useEffect(() => {
+    const loadCity = async () => {
+      try {
+        const savedCity = await AsyncStorage.getItem('city');
+        if (savedCity) {
+          setSelectedCity(savedCity);
+        } else {
+          console.log('значение не найдено');
+        }
+      } catch (error) {
+        console.error('ошибка при получение city из хранилища:', error);
+      }
+    };
+
+    loadCity();
+  }, []);
+
+  const statusBarHeight: any = StatusBar.currentHeight;
 
   return (
     <>
-      <View style={styles.navibar}>
+      <View style={[styles.navibar, {top: statusBarHeight - 5}]}>
         <TouchableOpacity
           onPress={() => openSelectCityModal()}
           style={styles.touchArea}>
@@ -66,7 +92,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     position: 'absolute',
-    top: 0,
     height: 50,
     width: '100%',
     backgroundColor: 'transparent',

@@ -1,17 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  ImageBackground,
-} from 'react-native';
+import {StatusBar, StyleSheet, Text, View, ImageBackground} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {WindDirection} from '../assets/windDirection';
 import {getIconWeatherBg} from '../assets/fonWeatherBg';
+import {weatherImage} from '../assets/objectWeatherImage';
+import {convertTimeStamp} from '../assets/converTimeStamp';
+import DaylightInfo from '../components/DaylightInfo';
+import {getDaylightDuration} from '../assets/dailyLightDuration';
 
 const MainPage = () => {
   const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
@@ -20,31 +17,17 @@ const MainPage = () => {
   );
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [city, setCity] = useState<string>('');
+  let sr: any = '03:44';
+  let ss: any = '22:11';
 
-  const url: string = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
+  if (currentWeather && currentWeather.sys) {
+    sr = convertTimeStamp(currentWeather.sys.sunrise);
+    ss = convertTimeStamp(currentWeather.sys.sunset);
+  }
+  const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
 
   const handleCitySelect = (_city: string) => {
     setCity(_city);
-  };
-
-  const weatherImage = {
-    облачно: require('../image/cloudy-sky.jpg'),
-    облачноСпрояснением: require('../image/partly-cloudy.jpg'),
-    чистоеНебо: require('../image/clear-sky-v2.jpg'),
-    снег: require('../image/winter-sky.jpeg'),
-    туман: require('../image/fog-sky.jpg'),
-    торнадо: require('../image/tornado-sky.jpg'),
-    rain: {
-      пасмурно: require('../image/mainly-cloudy.jpg'),
-      дождь: require('../image/rainy-sky.jpg'),
-      гроза: require('../image/storm-sky.jpg'),
-    },
-    night: {
-      ночноеНебоЧистое: require('../image/night-clear-sky.png'),
-      ночноеНебоСОблаками: require('../image/night-cloudy-sky.webp'),
-      ночноеЧистоеНебоЗимой: require('../image/winter-night-clear-sky.png'),
-    },
-    ночноеДождливоеНебо: require('../image/night-rain-sky.jpg'),
   };
 
   const getWeather = async () => {
@@ -63,10 +46,46 @@ const MainPage = () => {
         setErrorStatus(null);
       }
     } catch (error) {
-      console.error('Ошибка при получении данных о погоде:', error);
-      setErrorStatus('Ошибка при получении данных о погоде');
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('Проблема с интернет-соединением:', error);
+        setErrorStatus('Проблема с интернет-соединением');
+      } else {
+        console.error('Ошибка при получении данных о погоде:', error);
+        setErrorStatus('Ошибка при получении данных о погоде');
+      }
     }
   };
+
+  useEffect(() => {
+    const loadCity = async () => {
+      try {
+        const savedCity = await AsyncStorage.getItem('city');
+        if (savedCity) {
+          setCity(savedCity);
+        } else {
+          console.log('значение не найдено');
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке city из хранилища:', error);
+      }
+    };
+
+    loadCity();
+  }, []);
+
+  useEffect(() => {
+    const saveCity = async () => {
+      try {
+        await AsyncStorage.setItem('city', city);
+      } catch (error) {
+        console.error('Ошибка при сохранении city в хранилище:', error);
+      }
+    };
+
+    if (city) {
+      saveCity();
+    }
+  }, [city]);
 
   useEffect(() => {
     if (!city) return;
@@ -82,26 +101,46 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, [city]);
 
+  const currentTime = new Date().toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
     <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <ImageBackground
         source={
           currentWeather
-            ? getIconWeatherBg(currentWeather.weather[0].id ?? '', weatherImage)
+            ? getIconWeatherBg(
+                currentWeather.weather[0].id ?? '',
+                weatherImage,
+                currentWeather.dt,
+                currentWeather.timezone,
+              )
             : weatherImage.облачно
         }
         style={styles.backgroundImage}></ImageBackground>
       <NaviBar onCitySelect={handleCitySelect} />
       <View style={styles.mainWeatherInfoItem}>
-        <Text style={styles.tempText}>
+        <Text
+          style={
+            currentWeather?.main?.temp !== undefined
+              ? styles.tempText
+              : styles.text
+          }>
           {currentWeather?.main.temp !== undefined
             ? `${Math.round(currentWeather.main.temp)}°C`
-            : '30°C'}
+            : 'Загрузка'}
         </Text>
         <Text style={styles.text}>
           {currentWeather?.weather[0].description}
         </Text>
-        <Text style={styles.text}>{errorStatus}</Text>
+        <Text style={styles.textError}>{errorStatus}</Text>
       </View>
       <View style={styles.gridContainer}>
         <View style={styles.paramsGrid}>
@@ -130,6 +169,19 @@ const MainPage = () => {
             </Text>
           </View>
         </View>
+        <DaylightInfo
+          sunrise={sr}
+          sunset={ss}
+          daylightDuration={
+            currentWeather?.sys?.sunrise && currentWeather?.sys?.sunset
+              ? getDaylightDuration(
+                  currentWeather.sys.sunrise,
+                  currentWeather.sys.sunset,
+                )
+              : ''
+          }
+          currentTime={currentTime}
+        />
       </View>
     </View>
   );
@@ -183,6 +235,12 @@ const styles = StyleSheet.create({
     textShadowColor: 'black',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 2,
+  },
+  textError: {
+    color: 'red',
+    fontSize: 22,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   tempText: {
     color: 'white',
