@@ -3,7 +3,7 @@
 Мобильное приложения для отображения погоды
 
 <div align="center" style="display: flex; align-items: center;">
-  <img src="./src/image/app_preview.jpg" alt="App preview" width="300" height="500">
+  <img src="./src/image/app_preview.jpg" alt="App preview" width="300" height="400">
 </div>
 
 # Стек технологий
