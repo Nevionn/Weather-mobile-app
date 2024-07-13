@@ -35,3 +35,8 @@ npx react-native run-android
 ```bash
 npm run android
 ```
+
+## ССЫЛКИ
+
+  [<img src="https://gitlab.com/prolinux410/owl_dots/-/raw/main/.img/git_tg.png?ref_type=heads" width="100">](https://t.me/ancient_nevionn)
+  [<img src="https://gitlab.com/prolinux410/owl_dots/-/raw/main/.img/git_coffee.png?ref_type=heads" width="100">](https://www.donationalerts.com/r/nevion)
