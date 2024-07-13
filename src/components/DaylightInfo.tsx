@@ -40,7 +40,7 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
         {/* Круг для текущего положения солнца */}
         <Circle cx={cx} cy={cy} r="5" fill="orange" />
       </Svg>
-      <View style={styles.infoContainer}>
+      <View style={styles.infoContainerText}>
         <Text style={styles.timeText}>{sunrise}</Text>
         <Text style={styles.labelText}>Световой день</Text>
         <Text style={styles.timeText}>{sunset}</Text>
@@ -53,13 +53,12 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 144,
-    width: 374,
     alignItems: 'center',
-    marginLeft: 12,
+    marginHorizontal: 19,
     borderRadius: 10,
     backgroundColor: 'rgba(192,217,245, 0.6)',
   },
-  infoContainer: {
+  infoContainerText: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',

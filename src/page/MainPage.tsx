@@ -208,15 +208,14 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     height: 340,
-    justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: '40%',
-    backgroundColor: 'transparent',
   },
   paramsGrid: {
     flexDirection: 'column',
+    margin: 5,
   },
   itemGrid: {
     height: 95,
