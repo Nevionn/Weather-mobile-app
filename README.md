@@ -10,7 +10,7 @@
 
 <div align="center" style="display: flex; align-items: center;">
   <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React Native Logo" width="100" height="100">
-  <span style="margin: 0 10px; font-size: 24px;">+</span>
+  <span style="margin: 0 10px; font-size: 24px;"> </span>
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="Python Logo" width="100" height="100">
 </div>
 
@@ -35,6 +35,10 @@ npx react-native run-android
 ```bash
 npm run android
 ```
+
+# Установка апк файла
+
+Зайти в раздел [релиз](https://gitlab.com/web4450122/reminder-close-door/-/releases) и скачать файл weather.apk
 
 ## ССЫЛКИ
 
