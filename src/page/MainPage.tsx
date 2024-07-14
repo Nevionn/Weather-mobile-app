@@ -3,7 +3,7 @@ import {StatusBar, StyleSheet, Text, View, ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
-import {WindDirection} from '../assets/windDirection';
+import {WindDirection} from '../components/windDirection';
 import {getIconWeatherBg} from '../assets/fonWeatherBg';
 import {weatherImage} from '../assets/objectWeatherImage';
 import {convertTimeStamp} from '../assets/converTimeStamp';
