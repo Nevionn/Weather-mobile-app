@@ -38,7 +38,7 @@ npm run android
 
 # Установка апк файла
 
-Зайти в раздел [релиз](https://gitlab.com/web4450122/reminder-close-door/-/releases) и скачать файл weather.apk
+Зайти в раздел [релиз](https://gitlab.com/web4450122/weather-mobile-app/-/releases) и скачать файл weather.apk
 
 ## ССЫЛКИ
 
