@@ -138,7 +138,6 @@ const MainPage = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
       }>
-      {/* <View style={styles.container}> */}
       <StatusBar
         barStyle="light-content"
         translucent
@@ -214,7 +213,6 @@ const MainPage = () => {
           currentTime={currentTime}
         />
       </View>
-      {/* </View> */}
     </ScrollView>
   );
 };
