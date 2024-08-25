@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StatusBar,
   StyleSheet,
   Text,
   View,
+  ScrollView,
+  RefreshControl,
   ImageBackground,
   Dimensions,
 } from 'react-native';
@@ -63,6 +65,24 @@ const MainPage = () => {
     }
   };
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefreshApp = useCallback(async () => {
+    if (!city) {
+      console.error('Город не указан для обновления погоды.');
+      return;
+    }
+
+    setRefreshing(true);
+    try {
+      await getWeather();
+    } catch (error) {
+      console.error('Ошибка при обновлении:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [city]);
+
   useEffect(() => {
     const loadCity = async () => {
       try {
@@ -102,7 +122,6 @@ const MainPage = () => {
   //   };
 
   //   fetchData();
-
   //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
 
   //   return () => clearInterval(intervalId);
@@ -114,7 +133,12 @@ const MainPage = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
+      }>
+      {/* <View style={styles.container}> */}
       <StatusBar
         barStyle="light-content"
         translucent
@@ -190,7 +214,8 @@ const MainPage = () => {
           currentTime={currentTime}
         />
       </View>
-    </View>
+      {/* </View> */}
+    </ScrollView>
   );
 };
 
