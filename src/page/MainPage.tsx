@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {StatusBar, StyleSheet, Text, View, ImageBackground} from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Dimensions,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
@@ -9,7 +16,7 @@ import {weatherImage} from '../assets/objectWeatherImage';
 import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
-
+const {width} = Dimensions.get('window');
 const MainPage = () => {
   const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
@@ -87,19 +94,19 @@ const MainPage = () => {
     }
   }, [city]);
 
-  useEffect(() => {
-    if (!city) return;
+  // useEffect(() => {
+  //   if (!city) return;
 
-    const fetchData = async () => {
-      await getWeather();
-    };
+  //   const fetchData = async () => {
+  //     await getWeather();
+  //   };
 
-    fetchData();
+  //   fetchData();
 
-    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+  //   const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
 
-    return () => clearInterval(intervalId);
-  }, [city]);
+  //   return () => clearInterval(intervalId);
+  // }, [city]);
 
   const currentTime = new Date().toLocaleTimeString('ru-RU', {
     hour: '2-digit',
@@ -214,12 +221,13 @@ const styles = StyleSheet.create({
     marginTop: '40%',
   },
   paramsGrid: {
+    width: width * 0.45, // Ширина зависит от ширины экрана (примерно 45%)
     flexDirection: 'column',
     margin: 5,
+    marginLeft: 11,
   },
   itemGrid: {
-    height: 95,
-    width: 170,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
