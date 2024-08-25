@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   touchArea: {
     backgroundColor: 'transparent',
-    padding: 2,
+    padding: 8,
   },
 });
 

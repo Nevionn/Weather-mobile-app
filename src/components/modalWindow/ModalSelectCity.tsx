@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
   },
   openButton: {
     borderRadius: 20,
-    padding: 8,
+    padding: 11,
+    width: '35%',
     elevation: 2,
     marginTop: 20,
     marginHorizontal: 10,
