@@ -19,6 +19,7 @@ import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
 const {width} = Dimensions.get('window');
+
 const MainPage = () => {
   const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
@@ -133,70 +134,73 @@ const MainPage = () => {
   });
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
-      }>
+    <View style={styles.root}>
       <StatusBar
         barStyle="light-content"
         translucent
         backgroundColor="transparent"
       />
-      <ImageBackground
-        source={
-          currentWeather
-            ? getIconWeatherBg(
-                currentWeather.weather[0].id ?? '',
-                weatherImage,
-                currentWeather.dt,
-                currentWeather.timezone,
-              )
-            : weatherImage.облачно
-        }
-        style={styles.backgroundImage}></ImageBackground>
-      <NaviBar onCitySelect={handleCitySelect} />
-      <View style={styles.mainWeatherInfoItem}>
-        <Text
-          style={
-            currentWeather?.main?.temp !== undefined
-              ? styles.tempText
-              : styles.text
-          }>
-          {currentWeather?.main.temp !== undefined
-            ? `${Math.round(currentWeather.main.temp)}°C`
-            : 'Загрузка'}
-        </Text>
-        <Text style={styles.text}>
-          {currentWeather?.weather[0].description}
-        </Text>
-        <Text style={styles.textError}>{errorStatus}</Text>
-      </View>
-      <View style={styles.gridContainer}>
-        <View style={styles.paramsGrid}>
-          <WindDirection
-            degree={currentWeather?.wind.deg ?? 0}
-            speed={currentWeather?.wind.speed ?? 0}
-          />
+      <ScrollView
+        contentContainerStyle={styles.root}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
+        }>
+        <ImageBackground
+          source={
+            currentWeather
+              ? getIconWeatherBg(
+                  currentWeather.weather[0].id ?? '',
+                  weatherImage,
+                  currentWeather.dt,
+                  currentWeather.timezone,
+                )
+              : weatherImage.облачно
+          }
+          style={styles.backgroundImage}></ImageBackground>
+
+        <View style={styles.mainWeatherInfoItem}>
+          <Text
+            style={
+              currentWeather?.main?.temp !== undefined
+                ? styles.tempText
+                : styles.text
+            }>
+            {currentWeather?.main.temp !== undefined
+              ? `${Math.round(currentWeather.main.temp)}°C`
+              : 'Загрузка'}
+          </Text>
+          <Text style={styles.text}>
+            {currentWeather?.weather[0].description}
+          </Text>
+          <Text style={styles.textError}>{errorStatus}</Text>
         </View>
-        <View style={styles.paramsGrid}>
-          <View style={styles.itemGrid}>
-            <Text style={styles.text}>
-              ощущается{'\n'}
-              {currentWeather?.main.feels_like}°C
-            </Text>
+
+        <View style={styles.gridContainer}>
+          <View style={styles.paramsGrid}>
+            <WindDirection
+              degree={currentWeather?.wind.deg ?? 0}
+              speed={currentWeather?.wind.speed ?? 0}
+            />
           </View>
-          <View style={styles.itemGrid}>
-            <Text style={styles.text}>
-              облачность{'\n'}
-              {currentWeather?.clouds.all}%
-            </Text>
-          </View>
-          <View style={styles.itemGrid}>
-            <Text style={styles.text}>
-              влажность{'\n'}
-              {currentWeather?.main.humidity}%
-            </Text>
+          <View style={styles.paramsGrid}>
+            <View style={styles.itemGrid}>
+              <Text style={styles.text}>
+                ощущается{'\n'}
+                {currentWeather?.main.feels_like}°C
+              </Text>
+            </View>
+            <View style={styles.itemGrid}>
+              <Text style={styles.text}>
+                облачность{'\n'}
+                {currentWeather?.clouds.all}%
+              </Text>
+            </View>
+            <View style={styles.itemGrid}>
+              <Text style={styles.text}>
+                влажность{'\n'}
+                {currentWeather?.main.humidity}%
+              </Text>
+            </View>
           </View>
         </View>
         <DaylightInfo
@@ -212,42 +216,56 @@ const MainPage = () => {
           }
           currentTime={currentTime}
         />
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <NaviBar onCitySelect={handleCitySelect} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  root: {
+    flexGrow: 1,
+  },
+  scrollView: {
+    backgroundColor: 'transparent',
     alignItems: 'center',
+  },
+  testBox: {
+    height: 200,
+    width: 200,
+    backgroundColor: 'black',
+    marginBottom: 20,
+  },
+  backgroundImage: {
+    ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
-    backgroundColor: '#C2D9F5',
   },
   mainWeatherInfoItem: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    position: 'absolute',
-    top: 100,
-    height: 200,
+    marginTop: '25%',
+    height: 140,
     width: '100%',
     backgroundColor: 'transparent',
   },
   gridContainer: {
     height: 340,
+    width: width * 1,
     alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: '40%',
+    marginTop: '4%',
+    backgroundColor: 'transparent',
   },
   paramsGrid: {
     width: width * 0.45, // Ширина зависит от ширины экрана (примерно 45%)
     flexDirection: 'column',
-    margin: 5,
-    marginLeft: 11,
+    margin: 4,
+    marginLeft: 6,
+    backgroundColor: 'transparent',
   },
   itemGrid: {
     flex: 1,
@@ -275,11 +293,6 @@ const styles = StyleSheet.create({
   tempText: {
     color: 'white',
     fontSize: 60,
-  },
-  backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: '100%',
-    height: '100%',
   },
 });
 
