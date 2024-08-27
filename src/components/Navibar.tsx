@@ -91,10 +91,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
+    marginTop: 8,
     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     height: 50,
     width: '100%',
     backgroundColor: 'transparent',
+    zIndex: 10,
   },
   textAddNewCity: {
     color: 'white',
@@ -112,7 +117,7 @@ const styles = StyleSheet.create({
   },
   touchArea: {
     backgroundColor: 'transparent',
-    padding: 2,
+    padding: 8,
   },
 });
 
