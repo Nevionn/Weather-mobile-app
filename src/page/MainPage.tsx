@@ -18,15 +18,18 @@ import {weatherImage} from '../assets/objectWeatherImage';
 import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
+import getWeather from '../assets/networkRequest';
 const {width} = Dimensions.get('window');
 
 const MainPage = () => {
-  const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
     null,
   );
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
-  const [city, setCity] = useState<string>('');
+  const [city, setCity] = useState<string>('Санкт-петербург');
+
+  const [refreshing, setRefreshing] = useState(false);
+
   let sr: any = '03:44';
   let ss: any = '22:11';
 
@@ -34,39 +37,15 @@ const MainPage = () => {
     sr = convertTimeStamp(currentWeather.sys.sunrise);
     ss = convertTimeStamp(currentWeather.sys.sunset);
   }
-  const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
+
+  const currentTime = new Date().toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   const handleCitySelect = (_city: string) => {
     setCity(_city);
   };
-
-  const getWeather = async () => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        const errorText = await response.text();
-        if (response.status === 429) {
-          setErrorStatus('Превышено число запросов\nпопробуйте позже');
-        } else {
-          throw new Error(`bad status: ${response.status} - ${errorText}`);
-        }
-      } else {
-        const data: WeatherData = await response.json();
-        setCurrentWeather(data);
-        setErrorStatus(null);
-      }
-    } catch (error) {
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        console.error('Проблема с интернет-соединением:', error);
-        setErrorStatus('Проблема с интернет-соединением');
-      } else {
-        console.error('Ошибка при получении данных о погоде:', error);
-        setErrorStatus('Ошибка при получении данных о погоде');
-      }
-    }
-  };
-
-  const [refreshing, setRefreshing] = useState(false);
 
   const onRefreshApp = useCallback(async () => {
     if (!city) {
@@ -76,7 +55,7 @@ const MainPage = () => {
 
     setRefreshing(true);
     try {
-      await getWeather();
+      await getWeather({city, setErrorStatus, setCurrentWeather});
     } catch (error) {
       console.error('Ошибка при обновлении:', error);
     } finally {
@@ -119,7 +98,7 @@ const MainPage = () => {
     if (!city) return;
 
     const fetchData = async () => {
-      await getWeather();
+      await getWeather({city, setErrorStatus, setCurrentWeather});
     };
 
     fetchData();
@@ -127,11 +106,6 @@ const MainPage = () => {
 
     return () => clearInterval(intervalId);
   }, [city]);
-
-  const currentTime = new Date().toLocaleTimeString('ru-RU', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
 
   return (
     <View style={styles.root}>
