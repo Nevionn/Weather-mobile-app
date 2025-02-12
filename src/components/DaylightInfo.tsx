@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import Svg, {Line, Circle, Path} from 'react-native-svg';
+import Svg, {Circle, Path} from 'react-native-svg';
 import DaylightInfoProps from '../types/DaylightInfoProps';
 
 const parseTime = (time: string): number => {

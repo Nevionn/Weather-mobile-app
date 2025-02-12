@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
+const {width} = Dimensions.get('window');
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
@@ -19,48 +20,41 @@ import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
 import getWeather from '../assets/networkRequest';
-const {width} = Dimensions.get('window');
 
 const MainPage = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
     null,
   );
-  const [errorStatus, setErrorStatus] = useState<string | null>(null);
+  const [sr, setSr] = useState<string>('03:44');
+  const [ss, setSs] = useState<string>('22:11');
   const [city, setCity] = useState<string>('Санкт-петербург');
 
+  const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-
-  let sr: any = '03:44';
-  let ss: any = '22:11';
-
-  if (currentWeather && currentWeather.sys) {
-    sr = convertTimeStamp(currentWeather.sys.sunrise);
-    ss = convertTimeStamp(currentWeather.sys.sunset);
-  }
 
   const currentTime = new Date().toLocaleTimeString('ru-RU', {
     hour: '2-digit',
     minute: '2-digit',
   });
 
+  useEffect(() => {
+    if (currentWeather?.sys) {
+      setSr(convertTimeStamp(currentWeather.sys.sunrise));
+      setSs(convertTimeStamp(currentWeather.sys.sunset));
+    }
+  }, [currentWeather]);
+
   const handleCitySelect = (_city: string) => {
     setCity(_city);
   };
 
-  const onRefreshApp = useCallback(async () => {
-    if (!city) {
-      console.error('Город не указан для обновления погоды.');
-      return;
-    }
-
+  const onRefreshApp = useCallback(() => {
+    if (!city) return;
     setRefreshing(true);
-    try {
-      await getWeather({city, setErrorStatus, setCurrentWeather});
-    } catch (error) {
-      console.error('Ошибка при обновлении:', error);
-    } finally {
-      setRefreshing(false);
-    }
+
+    getWeather({city, setErrorStatus, setCurrentWeather})
+      .catch(error => console.error('Ошибка при обновлении:', error))
+      .finally(() => setRefreshing(false));
   }, [city]);
 
   useEffect(() => {
@@ -107,6 +101,17 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, [city]);
 
+  const weatherBg = useMemo(() => {
+    return currentWeather
+      ? getIconWeatherBg(
+          currentWeather.weather[0].id ?? '',
+          weatherImage,
+          currentWeather.dt,
+          currentWeather.timezone,
+        )
+      : weatherImage.облачно;
+  }, [currentWeather]);
+
   return (
     <View style={styles.root}>
       <StatusBar
@@ -119,18 +124,7 @@ const MainPage = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
         }>
-        <ImageBackground
-          source={
-            currentWeather
-              ? getIconWeatherBg(
-                  currentWeather.weather[0].id ?? '',
-                  weatherImage,
-                  currentWeather.dt,
-                  currentWeather.timezone,
-                )
-              : weatherImage.облачно
-          }
-          style={styles.backgroundImage}></ImageBackground>
+        <ImageBackground source={weatherBg} style={styles.backgroundImage} />
 
         <View style={styles.mainWeatherInfoItem}>
           <Text
@@ -235,7 +229,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   paramsGrid: {
-    width: width * 0.45, // Ширина зависит от ширины экрана (примерно 45%)
+    width: width * 0.45,
     flexDirection: 'column',
     margin: 4,
     marginLeft: 6,
