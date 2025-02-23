@@ -20,6 +20,7 @@ import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
 import getWeather from '../assets/networkRequest';
+import {COLOR} from '../assets/colorTheme';
 
 const MainPage = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
@@ -51,10 +52,9 @@ const MainPage = () => {
   const onRefreshApp = useCallback(() => {
     if (!city) return;
     setRefreshing(true);
-
-    getWeather({city, setErrorStatus, setCurrentWeather})
-      .catch(error => console.error('Ошибка при обновлении:', error))
-      .finally(() => setRefreshing(false));
+    // getWeather({city, setErrorStatus, setCurrentWeather})
+    //   .catch(error => console.error('Ошибка при обновлении:', error))
+    //   .finally(() => setRefreshing(false));
   }, [city]);
 
   useEffect(() => {
@@ -92,7 +92,7 @@ const MainPage = () => {
     if (!city) return;
 
     const fetchData = async () => {
-      await getWeather({city, setErrorStatus, setCurrentWeather});
+      // await getWeather({city, setErrorStatus, setCurrentWeather});
     };
 
     fetchData();
@@ -101,16 +101,21 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, [city]);
 
-  const weatherBg = useMemo(() => {
-    return currentWeather
-      ? getIconWeatherBg(
-          currentWeather.weather[0].id ?? '',
-          weatherImage,
-          currentWeather.dt,
-          currentWeather.timezone,
-        )
-      : weatherImage.облачно;
-  }, [currentWeather]);
+  const weatherBg = useMemo(
+    function setBackGroundImage() {
+      if (!currentWeather) {
+        return weatherImage.night.ночноеНебоСОблаками;
+      }
+
+      return getIconWeatherBg(
+        currentWeather.weather[0].id ?? '',
+        weatherImage,
+        currentWeather.dt,
+        currentWeather.timezone,
+      );
+    },
+    [currentWeather],
+  );
 
   return (
     <View style={styles.root}>
@@ -154,7 +159,10 @@ const MainPage = () => {
             <View style={styles.itemGrid}>
               <Text style={styles.text}>
                 ощущается{'\n'}
-                {currentWeather?.main.feels_like}°C
+                {currentWeather?.main.feels_like
+                  ? Math.round(currentWeather.main.feels_like * 10) / 10
+                  : ''}
+                °C
               </Text>
             </View>
             <View style={styles.itemGrid}>
@@ -198,12 +206,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
   },
-  testBox: {
-    height: 200,
-    width: 200,
-    backgroundColor: 'black',
-    marginBottom: 20,
-  },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
     width: '100%',
@@ -216,7 +218,6 @@ const styles = StyleSheet.create({
     marginTop: '25%',
     height: 140,
     width: '100%',
-    backgroundColor: 'transparent',
   },
   gridContainer: {
     height: 340,
@@ -226,14 +227,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: '4%',
-    backgroundColor: 'transparent',
   },
   paramsGrid: {
     width: width * 0.45,
     flexDirection: 'column',
     margin: 4,
     marginLeft: 6,
-    backgroundColor: 'transparent',
   },
   itemGrid: {
     flex: 1,
@@ -241,7 +240,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 5,
     borderRadius: 10,
-    backgroundColor: 'rgba(192,217,245, 0.6)',
+    backgroundColor: COLOR.RGBA.dark,
   },
   text: {
     color: 'white',
@@ -253,7 +252,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   textError: {
-    color: 'red',
+    color: COLOR.ALERT_COLOR,
     fontSize: 22,
     textAlign: 'center',
     fontWeight: 'bold',

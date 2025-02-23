@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {COLOR} from '../assets/colorTheme';
 
 export const getWindDirection = (degree: number) => {
   if (degree >= 337.5 || degree < 22.5) {
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 6,
     borderRadius: 10,
-    backgroundColor: 'rgba(192,217,245, 0.6)',
+    backgroundColor: COLOR.RGBA.dark,
   },
   compass: {
     width: 100,

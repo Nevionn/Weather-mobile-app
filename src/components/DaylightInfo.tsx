@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Svg, {Circle, Path} from 'react-native-svg';
 import DaylightInfoProps from '../types/DaylightInfoProps';
+import {COLOR} from '../assets/colorTheme';
 
 const parseTime = (time: string): number => {
   const [hours, minutes] = time.split(':').map(Number);
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 20,
     borderRadius: 10,
-    backgroundColor: 'rgba(192,217,245, 0.6)',
+    backgroundColor: COLOR.RGBA.dark,
   },
   infoContainerText: {
     flexDirection: 'row',
