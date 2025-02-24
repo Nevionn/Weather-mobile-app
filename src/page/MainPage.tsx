@@ -26,24 +26,37 @@ const MainPage = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
     null,
   );
-  const [sr, setSr] = useState<string>('03:44');
-  const [ss, setSs] = useState<string>('22:11');
-  const [city, setCity] = useState<string>('Санкт-петербург');
+  const [sr, setSr] = useState<string | null>(null);
+  const [ss, setSs] = useState<string | null>(null);
+  const [localTime, setLocalTime] = useState<string | null>(null);
+
+  const [city, setCity] = useState<string>('');
 
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const currentTime = new Date().toLocaleTimeString('ru-RU', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  useEffect(
+    function setLocalTimeCity() {
+      if (!currentWeather?.sys) return;
 
-  useEffect(() => {
-    if (currentWeather?.sys) {
-      setSr(convertTimeStamp(currentWeather.sys.sunrise));
-      setSs(convertTimeStamp(currentWeather.sys.sunset));
-    }
-  }, [currentWeather]);
+      const sunrise = convertTimeStamp(currentWeather.sys.sunrise);
+      const sunset = convertTimeStamp(currentWeather.sys.sunset);
+      const time = new Date(currentWeather.dt * 1000).toLocaleTimeString(
+        'ru-RU',
+        {
+          hour: '2-digit',
+          minute: '2-digit',
+        },
+      );
+
+      console.log('Обновляем состояния:', sunrise, sunset, time);
+
+      setSr(sunrise);
+      setSs(sunset);
+      setLocalTime(time);
+    },
+    [currentWeather],
+  );
 
   const handleCitySelect = (_city: string) => {
     setCity(_city);
@@ -52,9 +65,9 @@ const MainPage = () => {
   const onRefreshApp = useCallback(() => {
     if (!city) return;
     setRefreshing(true);
-    // getWeather({city, setErrorStatus, setCurrentWeather})
-    //   .catch(error => console.error('Ошибка при обновлении:', error))
-    //   .finally(() => setRefreshing(false));
+    getWeather({city, setErrorStatus, setCurrentWeather})
+      .catch(error => console.error('Ошибка при обновлении:', error))
+      .finally(() => setRefreshing(false));
   }, [city]);
 
   useEffect(() => {
@@ -92,7 +105,7 @@ const MainPage = () => {
     if (!city) return;
 
     const fetchData = async () => {
-      // await getWeather({city, setErrorStatus, setCurrentWeather});
+      await getWeather({city, setErrorStatus, setCurrentWeather});
     };
 
     fetchData();
@@ -130,9 +143,7 @@ const MainPage = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
         }>
         <NaviBar onCitySelect={handleCitySelect} />
-
         <ImageBackground source={weatherBg} style={styles.backgroundImage} />
-
         <View style={styles.mainWeatherInfoItem}>
           <Text
             style={
@@ -149,7 +160,6 @@ const MainPage = () => {
           </Text>
           <Text style={styles.textError}>{errorStatus}</Text>
         </View>
-
         <View style={styles.gridContainer}>
           <View style={styles.paramsGrid}>
             <WindDirection
@@ -181,19 +191,19 @@ const MainPage = () => {
             </View>
           </View>
         </View>
-        <DaylightInfo
-          sunrise={sr}
-          sunset={ss}
-          daylightDuration={
-            currentWeather?.sys?.sunrise && currentWeather?.sys?.sunset
-              ? getDaylightDuration(
-                  currentWeather.sys.sunrise,
-                  currentWeather.sys.sunset,
-                )
-              : ''
-          }
-          currentTime={currentTime}
-        />
+        {currentWeather && sr && ss && localTime ? (
+          <DaylightInfo
+            sunrise={sr}
+            sunset={ss}
+            daylightDuration={getDaylightDuration(
+              currentWeather.sys.sunrise,
+              currentWeather.sys.sunset,
+            )}
+            currentTime={localTime}
+          />
+        ) : (
+          <Text>Загрузка...</Text> // Вместо заглушки показываем загрузку
+        )}
       </ScrollView>
     </View>
   );

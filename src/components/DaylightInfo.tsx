@@ -18,7 +18,6 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
   const sunriseTime = parseTime(sunrise);
   const sunsetTime = parseTime(sunset);
   const current = parseTime(currentTime);
-  // const current = 18;
 
   const t = (current - sunriseTime) / (sunsetTime - sunriseTime);
 
