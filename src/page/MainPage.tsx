@@ -104,7 +104,7 @@ const MainPage = () => {
   const weatherBg = useMemo(
     function setBackGroundImage() {
       if (!currentWeather) {
-        return weatherImage.night.ночноеНебоСОблаками;
+        return weatherImage.night.ночноеНебоЧистое;
       }
 
       return getIconWeatherBg(
@@ -129,6 +129,8 @@ const MainPage = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
         }>
+        <NaviBar onCitySelect={handleCitySelect} />
+
         <ImageBackground source={weatherBg} style={styles.backgroundImage} />
 
         <View style={styles.mainWeatherInfoItem}>
@@ -193,7 +195,6 @@ const MainPage = () => {
           currentTime={currentTime}
         />
       </ScrollView>
-      <NaviBar onCitySelect={handleCitySelect} />
     </View>
   );
 };

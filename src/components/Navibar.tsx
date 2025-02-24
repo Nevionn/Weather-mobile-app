@@ -11,6 +11,7 @@ import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
 import ModalSelectCity from './modalWindow/ModalSelectCity';
+import {COLOR} from '../assets/colorTheme';
 
 const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
@@ -98,7 +99,6 @@ const styles = StyleSheet.create({
     right: 0,
     height: 50,
     width: '100%',
-    backgroundColor: 'transparent',
     zIndex: 10,
   },
   textAddNewCity: {
