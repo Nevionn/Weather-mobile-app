@@ -6,19 +6,19 @@ export const getWindDirection = (degree: number) => {
   if (degree >= 337.5 || degree < 22.5) {
     return 'Северный';
   } else if (degree >= 22.5 && degree < 67.5) {
-    return 'Северо-восточный';
+    return 'Северо\nвосточный';
   } else if (degree >= 67.5 && degree < 112.5) {
     return 'Восточный';
   } else if (degree >= 112.5 && degree < 157.5) {
-    return 'Юго-восточный';
+    return 'Юго\nвосточный';
   } else if (degree >= 157.5 && degree < 202.5) {
     return 'Южный';
   } else if (degree >= 202.5 && degree < 247.5) {
-    return 'Юго-западный';
+    return 'Юго\nзападный';
   } else if (degree >= 247.5 && degree < 292.5) {
     return 'Западный';
   } else if (degree >= 292.5 && degree < 337.5) {
-    return 'Северо-западный';
+    return 'Северо\nзападный';
   }
   return 'Неизвестный';
 };

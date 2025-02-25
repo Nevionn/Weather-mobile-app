@@ -30,7 +30,7 @@ const MainPage = () => {
   const [ss, setSs] = useState<string | null>(null);
   const [localTime, setLocalTime] = useState<string | null>(null);
 
-  const [city, setCity] = useState<string>('');
+  const [city, setCity] = useState<string | null>(null);
 
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -39,8 +39,15 @@ const MainPage = () => {
     function setLocalTimeCity() {
       if (!currentWeather?.sys) return;
 
-      const sunrise = convertTimeStamp(currentWeather.sys.sunrise);
-      const sunset = convertTimeStamp(currentWeather.sys.sunset);
+      const sunrise = convertTimeStamp(
+        currentWeather.sys.sunrise,
+        currentWeather.timezone,
+      );
+      const sunset = convertTimeStamp(
+        currentWeather.sys.sunset,
+        currentWeather.timezone,
+      );
+
       const time = new Date(currentWeather.dt * 1000).toLocaleTimeString(
         'ru-RU',
         {
@@ -90,7 +97,7 @@ const MainPage = () => {
   useEffect(() => {
     const saveCity = async () => {
       try {
-        await AsyncStorage.setItem('city', city);
+        await AsyncStorage.setItem('city', city ?? '');
       } catch (error) {
         console.error('Ошибка при сохранении city в хранилище:', error);
       }
@@ -123,8 +130,7 @@ const MainPage = () => {
       return getIconWeatherBg(
         currentWeather.weather[0].id ?? '',
         weatherImage,
-        currentWeather.dt,
-        currentWeather.timezone,
+        localTime ?? '',
       );
     },
     [currentWeather],
@@ -202,7 +208,7 @@ const MainPage = () => {
             currentTime={localTime}
           />
         ) : (
-          <Text>Загрузка...</Text> // Вместо заглушки показываем загрузку
+          <Text>Загрузка...</Text>
         )}
       </ScrollView>
     </View>

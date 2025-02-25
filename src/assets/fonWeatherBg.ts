@@ -3,15 +3,13 @@ import WeatherImages from '../types/WeatherImages';
 export const getIconWeatherBg = (
   weatherCode: number,
   weatherObj: WeatherImages,
-  dt: number,
-  timezone: number,
+  localTime: string,
 ): string | undefined => {
   if (weatherCode === undefined || weatherCode === null) {
     return undefined;
   }
 
-  const currentTimeInRegion = new Date((dt + timezone) * 1000);
-  const currentHour = currentTimeInRegion.getUTCHours();
+  const currentHour = parseInt(localTime);
 
   let bgImage: string | undefined = '';
 
