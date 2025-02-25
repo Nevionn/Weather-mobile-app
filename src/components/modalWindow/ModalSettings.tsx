@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import ModalSettingsProps from '../../types/ModalSettingsProps';
 import {COLOR} from '../../assets/colorTheme';
-import {APP_VERSION} from '../../../App';
 
 const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
   const handlePress = () => {
     Linking.openURL('https://gitlab.com/web4450122/weather-mobile-app');
   };
+
   return (
     <View style={styles.container}>
       <Modal
@@ -37,10 +37,10 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
             <Text style={styles.modalText}>
               <Text style={styles.developer}>Разработчик</Text> -{' '}
               <Text onPress={handlePress} style={styles.nevion}>
-                Nevion Soft
+                Nevionn
               </Text>
             </Text>
-            <Text style={styles.modalText}>Версия {APP_VERSION}</Text>
+            <Text style={styles.modalText}>Версия</Text>
             <TouchableOpacity
               style={{
                 ...styles.openButton,

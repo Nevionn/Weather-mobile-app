@@ -40,7 +40,8 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
   };
 
   const handleCitySelect = (city: string) => {
-    onCitySelect(city);
+    const trimmedCity = city.trim();
+    onCitySelect(trimmedCity);
     setSearchText('');
     setFilteredCities(cities);
     onClose();
@@ -86,16 +87,16 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
                   ...styles.openButton,
                   backgroundColor: COLOR.BUTTON_COLOR,
                 }}
-                onPress={() => onClose()}>
-                <Text style={styles.textButton}>Закрыть</Text>
+                onPress={() => handleCitySelect(searchText)}>
+                <Text style={styles.textButton}>Принять</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
                   ...styles.openButton,
                   backgroundColor: COLOR.BUTTON_COLOR,
                 }}
-                onPress={() => handleCitySelect(searchText)}>
-                <Text style={styles.textButton}>Принять</Text>
+                onPress={() => onClose()}>
+                <Text style={styles.textButton}>Закрыть</Text>
               </TouchableOpacity>
             </View>
           </View>
