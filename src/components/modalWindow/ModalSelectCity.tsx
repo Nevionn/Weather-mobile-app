@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,19 +10,7 @@ import {
 } from 'react-native';
 import {COLOR} from '../../assets/colorTheme';
 import ModalAddCityProps from '../../types/ModalAddCityProps';
-
-const cities = [
-  'Екатеринбург',
-  'Казань',
-  'Москва',
-  'Нижний Новгород',
-  'Новосибирск',
-  'Омск',
-  'Ростов-на-Дону',
-  'Самара',
-  'Санкт-Петербург',
-  'Челябинск',
-];
+import cityData from '../../assets/city.json';
 
 const ModalSelectCity: React.FC<ModalAddCityProps> = ({
   isVisible,
@@ -30,7 +18,15 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
   onCitySelect,
 }) => {
   const [searchText, setSearchText] = useState('');
-  const [filteredCities, setFilteredCities] = useState(cities);
+  const [filteredCities, setFilteredCities] = useState<string[]>([]);
+
+  const cities = cityData
+    .map(city => city.city)
+    .filter((name): name is string => typeof name === 'string');
+
+  useEffect(() => {
+    setFilteredCities(cities);
+  }, [isVisible]);
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -53,9 +49,7 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
         animationType="fade"
         transparent={true}
         visible={isVisible}
-        onRequestClose={() => {
-          onClose();
-        }}>
+        onRequestClose={onClose}>
         <View style={styles.modalBackground}>
           <View
             style={{
@@ -72,7 +66,7 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
             />
             <FlatList
               data={filteredCities}
-              keyExtractor={item => item}
+              keyExtractor={(item, index) => `${item}_${index}`}
               renderItem={({item}) => (
                 <TouchableOpacity
                   style={styles.cityItem}
@@ -95,7 +89,7 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
                   ...styles.openButton,
                   backgroundColor: COLOR.BUTTON_COLOR,
                 }}
-                onPress={() => onClose()}>
+                onPress={onClose}>
                 <Text style={styles.textButton}>Закрыть</Text>
               </TouchableOpacity>
             </View>

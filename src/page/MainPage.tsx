@@ -48,19 +48,22 @@ const MainPage = () => {
         currentWeather.timezone,
       );
 
-      const time = new Date(currentWeather.dt * 1000).toLocaleTimeString(
-        'ru-RU',
-        {
-          hour: '2-digit',
-          minute: '2-digit',
-        },
-      );
+      const utcTime = currentWeather.dt * 1000;
 
-      console.log('Обновляем состояния:', sunrise, sunset, time);
+      // Добавляем смещение временной зоны (в миллисекундах)
+      const localTime = new Date(utcTime + currentWeather.timezone * 1000);
+
+      const formattedTime = localTime.toLocaleTimeString('ru-RU', {
+        timeZone: 'UTC',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      console.log('Обновляем состояния:', sunrise, sunset, formattedTime);
 
       setSr(sunrise);
       setSs(sunset);
-      setLocalTime(time);
+      setLocalTime(formattedTime);
     },
     [currentWeather],
   );
