@@ -11,7 +11,6 @@ import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
 import ModalSelectCity from './modalWindow/ModalSelectCity';
-import {COLOR} from '../assets/colorTheme';
 
 const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);

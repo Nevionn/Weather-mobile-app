@@ -4,63 +4,52 @@ export const getIconWeatherBg = (
   weatherCode: number,
   weatherObj: WeatherImages,
   localTime: string,
+  sr: string,
+  ss: string,
 ): string | undefined => {
   if (weatherCode === undefined || weatherCode === null) {
     return undefined;
   }
 
-  const currentHour = parseInt(localTime);
+  const currentHour = parseInt(localTime, 10);
+  const sunriseHour = parseInt(sr, 10);
+  const sunsetHour = parseInt(ss, 10);
+
+  const isNight = currentHour < sunriseHour || currentHour >= sunsetHour;
 
   let bgImage: string | undefined = '';
 
-  if (weatherCode >= 200 && weatherCode <= 232) bgImage = weatherObj.rain.гроза;
-  else if (weatherCode >= 300 && weatherCode <= 321) {
-    if (currentHour >= 23 || currentHour <= 4) {
-      bgImage = weatherObj.ночноеДождливоеНебо;
-    } else {
-      bgImage = weatherObj.rain.дождь;
-    }
+  if (weatherCode >= 200 && weatherCode <= 232) {
+    bgImage = weatherObj.rain.гроза;
+  } else if (weatherCode >= 300 && weatherCode <= 321) {
+    bgImage = isNight ? weatherObj.ночноеДождливоеНебо : weatherObj.rain.дождь;
   } else if (weatherCode >= 500 && weatherCode <= 531) {
-    if (currentHour >= 23 || currentHour <= 4) {
-      bgImage = weatherObj.ночноеДождливоеНебо;
-    } else {
-      bgImage = weatherObj.rain.дождь;
-    }
+    bgImage = isNight ? weatherObj.ночноеДождливоеНебо : weatherObj.rain.дождь;
   } else if (weatherCode >= 600 && weatherCode <= 622) {
-    if (currentHour >= 23 || currentHour <= 4) {
-      bgImage = weatherObj.night.ночноеЧистоеНебоЗимой;
-    } else {
-      bgImage = weatherObj.снег;
-    }
+    bgImage = isNight
+      ? weatherObj.night.ночноеЧистоеНебоЗимой
+      : weatherObj.снег;
   } else if (weatherCode >= 701 && weatherCode <= 781) {
-    bgImage = weatherObj.туман;
-    if (weatherCode === 781 || weatherCode === 771) {
-      bgImage = weatherObj.торнадо;
-    }
+    bgImage =
+      weatherCode === 781 || weatherCode === 771
+        ? weatherObj.торнадо
+        : weatherObj.туман;
   } else if (weatherCode >= 800 && weatherCode <= 804) {
     if (weatherCode === 800) {
-      if (currentHour >= 23 || currentHour <= 4) {
-        bgImage = weatherObj.night.ночноеНебоЧистое;
-      } else {
-        bgImage = weatherObj.чистоеНебо;
-      }
+      bgImage = isNight
+        ? weatherObj.night.ночноеНебоЧистое
+        : weatherObj.чистоеНебо;
     } else if (weatherCode === 801) {
-      if (currentHour >= 23 || currentHour <= 4) {
-        bgImage = weatherObj.night.ночноеНебоСОблаками;
-      } else {
-        bgImage = weatherObj.облачноСпрояснением;
-      }
+      bgImage = isNight
+        ? weatherObj.night.ночноеНебоСОблаками
+        : weatherObj.облачноСпрояснением;
     } else if (weatherCode === 802 || weatherCode === 803) {
-      if (currentHour >= 23 || currentHour <= 4) {
-        bgImage = weatherObj.night.ночноеНебоСОблаками;
-      } else {
-        bgImage = weatherObj.облачно;
-      }
+      bgImage = isNight
+        ? weatherObj.night.ночноеНебоСОблаками
+        : weatherObj.облачно;
     } else {
       bgImage = weatherObj.rain.пасмурно;
     }
-  } else {
-    bgImage = '';
   }
 
   return bgImage || undefined;

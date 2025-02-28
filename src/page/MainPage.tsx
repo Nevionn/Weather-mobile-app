@@ -134,6 +134,8 @@ const MainPage = () => {
         currentWeather.weather[0].id ?? '',
         weatherImage,
         localTime ?? '',
+        sr ?? '',
+        ss ?? '',
       );
     },
     [currentWeather],
