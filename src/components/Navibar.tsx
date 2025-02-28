@@ -46,7 +46,7 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
         if (savedCity) {
           setSelectedCity(savedCity);
         } else {
-          console.log('значение не найдено');
+          console.log('значение city не найдено');
         }
       } catch (error) {
         console.error('ошибка при получение city из хранилища:', error);

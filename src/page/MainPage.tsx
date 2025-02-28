@@ -87,7 +87,7 @@ const MainPage = () => {
         if (savedCity) {
           setCity(savedCity);
         } else {
-          console.log('значение не найдено');
+          console.log('значение city не найдено');
         }
       } catch (error) {
         console.error('Ошибка при загрузке city из хранилища:', error);
@@ -162,7 +162,9 @@ const MainPage = () => {
                 ? styles.tempText
                 : styles.text
             }>
-            {currentWeather?.main.temp !== undefined
+            {city === null
+              ? 'Выберите город'
+              : currentWeather?.main.temp !== undefined
               ? `${Math.round(currentWeather.main.temp)}°C`
               : 'Загрузка'}
           </Text>
