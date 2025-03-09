@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getCity} from '../assets/utils/storageUtils';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
@@ -40,20 +40,16 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   };
 
   useEffect(() => {
-    const loadCity = async () => {
-      try {
-        const savedCity = await AsyncStorage.getItem('city');
-        if (savedCity) {
-          setSelectedCity(savedCity);
-        } else {
-          console.log('значение city не найдено');
-        }
-      } catch (error) {
-        console.error('ошибка при получение city из хранилища:', error);
+    const fetchCity = async () => {
+      const storedCity = await getCity();
+      if (storedCity) {
+        setSelectedCity(storedCity);
+      } else {
+        console.log('значение city не найдено');
       }
     };
 
-    loadCity();
+    fetchCity();
   }, []);
 
   const statusBarHeight: any = StatusBar.currentHeight;

@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from 'react-native';
 const {width} = Dimensions.get('window');
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {WindDirection} from '../components/windDirection';
@@ -20,6 +19,7 @@ import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
 import getWeather from '../assets/networkRequest';
+import {getCity, saveCity} from '../assets/utils/storageUtils';
 import {COLOR} from '../assets/colorTheme';
 
 const MainPage = () => {
@@ -81,34 +81,26 @@ const MainPage = () => {
   }, [city]);
 
   useEffect(() => {
-    const loadCity = async () => {
-      try {
-        const savedCity = await AsyncStorage.getItem('city');
-        if (savedCity) {
-          setCity(savedCity);
-        } else {
-          console.log('значение city не найдено');
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке city из хранилища:', error);
+    const fetchCity = async () => {
+      const storedCity = await getCity();
+      if (storedCity) {
+        setCity(storedCity);
+      } else {
+        console.log('значение city не найдено');
       }
     };
 
-    loadCity();
+    fetchCity();
   }, []);
 
   useEffect(() => {
-    const saveCity = async () => {
-      try {
-        await AsyncStorage.setItem('city', city ?? '');
-      } catch (error) {
-        console.error('Ошибка при сохранении city в хранилище:', error);
+    const saveCityToStorage = async () => {
+      if (city) {
+        await saveCity(city);
       }
     };
 
-    if (city) {
-      saveCity();
-    }
+    saveCityToStorage();
   }, [city]);
 
   useEffect(() => {
@@ -127,7 +119,7 @@ const MainPage = () => {
   const weatherBg = useMemo(
     function setBackGroundImage() {
       if (!currentWeather) {
-        return weatherImage.night.ночноеНебоЧистое;
+        return weatherImage.облачно;
       }
 
       return getIconWeatherBg(
@@ -183,7 +175,7 @@ const MainPage = () => {
           <View style={styles.paramsGrid}>
             <View style={styles.itemGrid}>
               <Text style={styles.text}>
-                ощущается{'\n'}
+                Ощущается{'\n'}
                 {currentWeather?.main.feels_like
                   ? Math.round(currentWeather.main.feels_like * 10) / 10
                   : ''}
@@ -192,13 +184,13 @@ const MainPage = () => {
             </View>
             <View style={styles.itemGrid}>
               <Text style={styles.text}>
-                облачность{'\n'}
+                Облачность{'\n'}
                 {currentWeather?.clouds.all}%
               </Text>
             </View>
             <View style={styles.itemGrid}>
               <Text style={styles.text}>
-                влажность{'\n'}
+                Влажность{'\n'}
                 {currentWeather?.main.humidity}%
               </Text>
             </View>
