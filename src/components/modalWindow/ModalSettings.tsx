@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Linking,
-  Modal,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
 import WebView from 'react-native-webview';
 import ModalSettingsProps from '../../types/ModalSettingsProps';
 import {COLOR, FONT} from '../../assets/colorTheme';
