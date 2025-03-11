@@ -32,7 +32,7 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
                 Nevionn
               </Text>
             </Text>
-            <Text style={styles.modalText}>Версия</Text>
+            <Text style={styles.modalText}>Версия 2.3.2</Text>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => onClose()}>

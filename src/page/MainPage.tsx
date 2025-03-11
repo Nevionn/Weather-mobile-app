@@ -75,9 +75,9 @@ const MainPage = () => {
   const onRefreshApp = useCallback(() => {
     if (!city) return;
     setRefreshing(true);
-    // getWeather({city, setErrorStatus, setCurrentWeather})
-    //   .catch(error => console.error('Ошибка при обновлении:', error))
-    //   .finally(() => setRefreshing(false));
+    getWeather({city, setErrorStatus, setCurrentWeather})
+      .catch(error => console.error('Ошибка при обновлении:', error))
+      .finally(() => setRefreshing(false));
   }, [city]);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const MainPage = () => {
     if (!city) return;
 
     const fetchData = async () => {
-      // await getWeather({city, setErrorStatus, setCurrentWeather});
+      await getWeather({city, setErrorStatus, setCurrentWeather});
     };
 
     fetchData();
