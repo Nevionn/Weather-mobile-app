@@ -10,3 +10,16 @@ export const COLOR = {
     light: 'rgba(255, 255, 255, 0.2)',
   },
 };
+
+export const FONT = {
+  SIZE: {
+    smallText: 12,
+    defaultText: 14,
+    headerText: 16,
+    pickCityText: 18,
+    errorText: 20,
+    indicatorText: 22,
+    iconText: 28,
+    hugeText: 60,
+  },
+};

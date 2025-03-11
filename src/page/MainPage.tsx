@@ -20,7 +20,7 @@ import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
 import getWeather from '../assets/networkRequest';
 import {getCity, saveCity} from '../assets/utils/storageUtils';
-import {COLOR} from '../assets/colorTheme';
+import {COLOR, FONT} from '../assets/colorTheme';
 
 const MainPage = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
@@ -152,7 +152,7 @@ const MainPage = () => {
             style={
               currentWeather?.main?.temp !== undefined
                 ? styles.tempText
-                : styles.text
+                : styles.textIndicator
             }>
             {city === null
               ? 'Выберите город'
@@ -160,7 +160,7 @@ const MainPage = () => {
               ? `${Math.round(currentWeather.main.temp)}°C`
               : 'Загрузка'}
           </Text>
-          <Text style={styles.text}>
+          <Text style={styles.textIndicator}>
             {currentWeather?.weather[0].description}
           </Text>
           <Text style={styles.textError}>{errorStatus}</Text>
@@ -174,7 +174,7 @@ const MainPage = () => {
           </View>
           <View style={styles.paramsGrid}>
             <View style={styles.itemGrid}>
-              <Text style={styles.text}>
+              <Text style={styles.textIndicator}>
                 Ощущается{'\n'}
                 {currentWeather?.main.feels_like
                   ? Math.round(currentWeather.main.feels_like * 10) / 10
@@ -183,13 +183,13 @@ const MainPage = () => {
               </Text>
             </View>
             <View style={styles.itemGrid}>
-              <Text style={styles.text}>
+              <Text style={styles.textIndicator}>
                 Облачность{'\n'}
                 {currentWeather?.clouds.all}%
               </Text>
             </View>
             <View style={styles.itemGrid}>
-              <Text style={styles.text}>
+              <Text style={styles.textIndicator}>
                 Влажность{'\n'}
                 {currentWeather?.main.humidity}%
               </Text>
@@ -258,9 +258,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLOR.RGBA.dark,
   },
-  text: {
+  textIndicator: {
     color: 'white',
-    fontSize: 22,
+    fontSize: FONT.SIZE.indicatorText,
     textAlign: 'center',
     fontWeight: 'bold',
     textShadowColor: 'black',
@@ -269,13 +269,13 @@ const styles = StyleSheet.create({
   },
   textError: {
     color: COLOR.ALERT_COLOR,
-    fontSize: 22,
+    fontSize: FONT.SIZE.errorText,
     textAlign: 'center',
     fontWeight: 'bold',
   },
   tempText: {
     color: 'white',
-    fontSize: 60,
+    fontSize: FONT.SIZE.hugeText,
   },
 });
 

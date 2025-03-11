@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import WebView from 'react-native-webview';
 import ModalSettingsProps from '../../types/ModalSettingsProps';
-import {COLOR} from '../../assets/colorTheme';
+import {COLOR, FONT} from '../../assets/colorTheme';
 
 const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
   const [isWebViewVisible, setIsWebViewVisible] = useState(false);
@@ -28,11 +28,7 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
           onClose();
         }}>
         <View style={styles.modalBackground}>
-          <View
-            style={{
-              ...styles.modalView,
-              backgroundColor: COLOR.SECONDARY_COLOR,
-            }}>
+          <View style={styles.modalView}>
             <Text style={styles.textHead}>О приложении</Text>
             <Text style={styles.modalText}>
               Приложение для отображения погоды
@@ -84,6 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLOR.SECONDARY_COLOR,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -107,16 +104,18 @@ const styles = StyleSheet.create({
   textButton: {
     color: 'white',
     textAlign: 'center',
+    fontSize: FONT.SIZE.defaultText,
   },
   textHead: {
     color: 'white',
     marginBottom: 15,
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: FONT.SIZE.headerText,
   },
   developer: {
     color: 'white',
+    fontSize: FONT.SIZE.defaultText,
   },
   nevion: {
     color: 'pink',
@@ -126,6 +125,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     color: 'white',
+    fontSize: FONT.SIZE.defaultText,
   },
 });
 

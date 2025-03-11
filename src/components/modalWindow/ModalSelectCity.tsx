@@ -12,7 +12,7 @@ import {
   loadFavoriteCities,
   uploadFavoriteCities,
 } from '../../assets/utils/storageUtils';
-import {COLOR} from '../../assets/colorTheme';
+import {COLOR, FONT} from '../../assets/colorTheme';
 import ModalAddCityProps from '../../types/ModalAddCityProps';
 import cityData from '../../assets/city.json';
 import SvgFavorites from '../icons/SvgFavorites';
@@ -203,13 +203,18 @@ const styles = StyleSheet.create({
   textButton: {
     color: 'white',
     textAlign: 'center',
+    fontSize: FONT.SIZE.defaultText,
   },
   textHead: {
     color: 'white',
     marginBottom: 15,
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: FONT.SIZE.headerText,
+  },
+  cityText: {
+    color: 'white',
+    fontSize: FONT.SIZE.defaultText,
   },
   input: {
     height: 40,
@@ -232,9 +237,6 @@ const styles = StyleSheet.create({
   },
   buttomFavorites: {
     padding: 10,
-  },
-  cityText: {
-    color: 'white',
   },
 });
 

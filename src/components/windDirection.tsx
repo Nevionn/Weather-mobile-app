@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {COLOR} from '../assets/colorTheme';
+import {COLOR, FONT} from '../assets/colorTheme';
 
 export const getWindDirection = (degree: number) => {
   if (degree >= 337.5 || degree < 22.5) {
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 22,
+    fontSize: FONT.SIZE.indicatorText,
     textAlign: 'center',
     fontWeight: 'bold',
     textShadowColor: 'black',
@@ -117,5 +117,6 @@ const styles = StyleSheet.create({
   },
   textDirectionCompas: {
     color: 'white',
+    fontSize: FONT.SIZE.defaultText,
   },
 });
