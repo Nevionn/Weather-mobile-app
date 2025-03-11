@@ -7,12 +7,15 @@ import {
   Linking,
   Modal,
 } from 'react-native';
+import WebView from 'react-native-webview';
 import ModalSettingsProps from '../../types/ModalSettingsProps';
 import {COLOR} from '../../assets/colorTheme';
 
 const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
+  const [isWebViewVisible, setIsWebViewVisible] = useState(false);
+
   const handlePress = () => {
-    Linking.openURL('https://gitlab.com/web4450122/weather-mobile-app');
+    setIsWebViewVisible(true);
   };
 
   return (
@@ -42,15 +45,23 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
             </Text>
             <Text style={styles.modalText}>Версия</Text>
             <TouchableOpacity
-              style={{
-                ...styles.openButton,
-                backgroundColor: COLOR.BUTTON_COLOR,
-              }}
+              style={styles.closeButton}
               onPress={() => onClose()}>
               <Text style={styles.textButton}>Закрыть</Text>
             </TouchableOpacity>
           </View>
         </View>
+      </Modal>
+
+      <Modal visible={isWebViewVisible} animationType="slide">
+        <WebView
+          source={{uri: 'https://gitlab.com/web4450122/weather-mobile-app'}}
+        />
+        <TouchableOpacity
+          style={styles.openWeViewButton}
+          onPress={() => setIsWebViewVisible(false)}>
+          <Text style={styles.textButton}>Закрыть</Text>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -82,11 +93,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  openButton: {
+  closeButton: {
     borderRadius: 20,
     padding: 11,
     width: '35%',
     elevation: 2,
+    backgroundColor: COLOR.BUTTON_COLOR,
+  },
+  openWeViewButton: {
+    padding: 11,
+    backgroundColor: 'black',
   },
   textButton: {
     color: 'white',
