@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+const {width} = Dimensions.get('window');
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {WindDirection} from '../components/windDirection';
@@ -18,108 +18,96 @@ import {weatherImage} from '../assets/objectWeatherImage';
 import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
-const {width} = Dimensions.get('window');
+import getWeather from '../assets/networkRequest';
+import {getCity, saveCity} from '../assets/utils/storageUtils';
+import {COLOR, FONT} from '../assets/colorTheme';
 
 const MainPage = () => {
-  const API_KEY: string = '61ba104eaa864aa62a033f6643305b6c';
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
     null,
   );
-  const [errorStatus, setErrorStatus] = useState<string | null>(null);
-  const [city, setCity] = useState<string>('');
-  let sr: any = '03:44';
-  let ss: any = '22:11';
+  const [sr, setSr] = useState<string | null>(null);
+  const [ss, setSs] = useState<string | null>(null);
+  const [localTime, setLocalTime] = useState<string | null>(null);
 
-  if (currentWeather && currentWeather.sys) {
-    sr = convertTimeStamp(currentWeather.sys.sunrise);
-    ss = convertTimeStamp(currentWeather.sys.sunset);
-  }
-  const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=${API_KEY}`;
+  const [city, setCity] = useState<string | null>(null);
+
+  const [errorStatus, setErrorStatus] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(
+    function setLocalTimeCity() {
+      if (!currentWeather?.sys) return;
+
+      const sunrise = convertTimeStamp(
+        currentWeather.sys.sunrise,
+        currentWeather.timezone,
+      );
+      const sunset = convertTimeStamp(
+        currentWeather.sys.sunset,
+        currentWeather.timezone,
+      );
+
+      const utcTime = currentWeather.dt * 1000;
+
+      // Добавляем смещение временной зоны (в миллисекундах)
+      const localTime = new Date(utcTime + currentWeather.timezone * 1000);
+
+      const formattedTime = localTime.toLocaleTimeString('ru-RU', {
+        timeZone: 'UTC',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      console.log('Обновляем состояния:', sunrise, sunset, formattedTime);
+
+      setSr(sunrise);
+      setSs(sunset);
+      setLocalTime(formattedTime);
+    },
+    [currentWeather],
+  );
 
   const handleCitySelect = (_city: string) => {
     setCity(_city);
   };
 
-  const getWeather = async () => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        const errorText = await response.text();
-        if (response.status === 429) {
-          setErrorStatus('Превышено число запросов\nпопробуйте позже');
-        } else {
-          throw new Error(`bad status: ${response.status} - ${errorText}`);
-        }
-      } else {
-        const data: WeatherData = await response.json();
-        setCurrentWeather(data);
-        setErrorStatus(null);
-      }
-    } catch (error) {
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        console.error('Проблема с интернет-соединением:', error);
-        setErrorStatus('Проблема с интернет-соединением');
-      } else {
-        console.error('Ошибка при получении данных о погоде:', error);
-        setErrorStatus('Ошибка при получении данных о погоде');
-      }
-    }
-  };
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefreshApp = useCallback(async () => {
-    if (!city) {
-      console.error('Город не указан для обновления погоды.');
-      return;
-    }
-
+  const onRefreshApp = useCallback(() => {
+    if (!city) return;
     setRefreshing(true);
-    try {
-      await getWeather();
-    } catch (error) {
-      console.error('Ошибка при обновлении:', error);
-    } finally {
-      setRefreshing(false);
-    }
+    getWeather({city, setErrorStatus, setCurrentWeather})
+      .catch(error => console.error('Ошибка при обновлении:', error))
+      .finally(() => setRefreshing(false));
   }, [city]);
 
   useEffect(() => {
-    const loadCity = async () => {
-      try {
-        const savedCity = await AsyncStorage.getItem('city');
-        if (savedCity) {
-          setCity(savedCity);
-        } else {
-          console.log('значение не найдено');
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке city из хранилища:', error);
+    const fetchCity = async () => {
+      const storedCity = await getCity();
+      if (storedCity) {
+        setCity(storedCity);
+      } else {
+        console.log('значение city не найдено');
       }
     };
 
-    loadCity();
+    fetchCity();
   }, []);
 
   useEffect(() => {
-    const saveCity = async () => {
-      try {
-        await AsyncStorage.setItem('city', city);
-      } catch (error) {
-        console.error('Ошибка при сохранении city в хранилище:', error);
+    const saveCityToStorage = async () => {
+      if (city) {
+        await saveCity(city);
       }
     };
 
-    if (city) {
-      saveCity();
-    }
+    saveCityToStorage();
   }, [city]);
 
   useEffect(() => {
     if (!city) return;
 
     const fetchData = async () => {
-      await getWeather();
+      await getWeather({city, setErrorStatus, setCurrentWeather});
     };
 
     fetchData();
@@ -128,10 +116,22 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, [city]);
 
-  const currentTime = new Date().toLocaleTimeString('ru-RU', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const weatherBg = useMemo(
+    function setBackGroundImage() {
+      if (!currentWeather) {
+        return weatherImage.чистоеНебо;
+      }
+
+      return getIconWeatherBg(
+        currentWeather.weather[0].id ?? '',
+        weatherImage,
+        localTime ?? '',
+        sr ?? '',
+        ss ?? '',
+      );
+    },
+    [currentWeather],
+  );
 
   return (
     <View style={styles.root}>
@@ -145,36 +145,26 @@ const MainPage = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />
         }>
-        <ImageBackground
-          source={
-            currentWeather
-              ? getIconWeatherBg(
-                  currentWeather.weather[0].id ?? '',
-                  weatherImage,
-                  currentWeather.dt,
-                  currentWeather.timezone,
-                )
-              : weatherImage.облачно
-          }
-          style={styles.backgroundImage}></ImageBackground>
-
+        <NaviBar onCitySelect={handleCitySelect} />
+        <ImageBackground source={weatherBg} style={styles.backgroundImage} />
         <View style={styles.mainWeatherInfoItem}>
           <Text
             style={
               currentWeather?.main?.temp !== undefined
                 ? styles.tempText
-                : styles.text
+                : styles.textIndicator
             }>
-            {currentWeather?.main.temp !== undefined
+            {city === null
+              ? 'Выберите город'
+              : currentWeather?.main.temp !== undefined
               ? `${Math.round(currentWeather.main.temp)}°C`
               : 'Загрузка'}
           </Text>
-          <Text style={styles.text}>
+          <Text style={styles.textIndicator}>
             {currentWeather?.weather[0].description}
           </Text>
           <Text style={styles.textError}>{errorStatus}</Text>
         </View>
-
         <View style={styles.gridContainer}>
           <View style={styles.paramsGrid}>
             <WindDirection
@@ -184,40 +174,42 @@ const MainPage = () => {
           </View>
           <View style={styles.paramsGrid}>
             <View style={styles.itemGrid}>
-              <Text style={styles.text}>
-                ощущается{'\n'}
-                {currentWeather?.main.feels_like}°C
+              <Text style={styles.textIndicator}>
+                Ощущается{'\n'}
+                {currentWeather?.main.feels_like
+                  ? Math.round(currentWeather.main.feels_like * 10) / 10
+                  : ''}
+                °C
               </Text>
             </View>
             <View style={styles.itemGrid}>
-              <Text style={styles.text}>
-                облачность{'\n'}
+              <Text style={styles.textIndicator}>
+                Облачность{'\n'}
                 {currentWeather?.clouds.all}%
               </Text>
             </View>
             <View style={styles.itemGrid}>
-              <Text style={styles.text}>
-                влажность{'\n'}
+              <Text style={styles.textIndicator}>
+                Влажность{'\n'}
                 {currentWeather?.main.humidity}%
               </Text>
             </View>
           </View>
         </View>
-        <DaylightInfo
-          sunrise={sr}
-          sunset={ss}
-          daylightDuration={
-            currentWeather?.sys?.sunrise && currentWeather?.sys?.sunset
-              ? getDaylightDuration(
-                  currentWeather.sys.sunrise,
-                  currentWeather.sys.sunset,
-                )
-              : ''
-          }
-          currentTime={currentTime}
-        />
+        {currentWeather && sr && ss && localTime ? (
+          <DaylightInfo
+            sunrise={sr}
+            sunset={ss}
+            daylightDuration={getDaylightDuration(
+              currentWeather.sys.sunrise,
+              currentWeather.sys.sunset,
+            )}
+            currentTime={localTime}
+          />
+        ) : (
+          <Text>Загрузка...</Text>
+        )}
       </ScrollView>
-      <NaviBar onCitySelect={handleCitySelect} />
     </View>
   );
 };
@@ -229,12 +221,6 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: 'transparent',
     alignItems: 'center',
-  },
-  testBox: {
-    height: 200,
-    width: 200,
-    backgroundColor: 'black',
-    marginBottom: 20,
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
@@ -248,7 +234,6 @@ const styles = StyleSheet.create({
     marginTop: '25%',
     height: 140,
     width: '100%',
-    backgroundColor: 'transparent',
   },
   gridContainer: {
     height: 340,
@@ -258,14 +243,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: '4%',
-    backgroundColor: 'transparent',
   },
   paramsGrid: {
-    width: width * 0.45, // Ширина зависит от ширины экрана (примерно 45%)
+    width: width * 0.45,
     flexDirection: 'column',
     margin: 4,
     marginLeft: 6,
-    backgroundColor: 'transparent',
   },
   itemGrid: {
     flex: 1,
@@ -273,11 +256,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 5,
     borderRadius: 10,
-    backgroundColor: 'rgba(192,217,245, 0.6)',
+    backgroundColor: COLOR.RGBA.dark,
   },
-  text: {
+  textIndicator: {
     color: 'white',
-    fontSize: 22,
+    fontSize: FONT.SIZE.indicatorText,
     textAlign: 'center',
     fontWeight: 'bold',
     textShadowColor: 'black',
@@ -285,14 +268,14 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   textError: {
-    color: 'red',
-    fontSize: 22,
+    color: COLOR.ALERT_COLOR,
+    fontSize: FONT.SIZE.errorText,
     textAlign: 'center',
     fontWeight: 'bold',
   },
   tempText: {
     color: 'white',
-    fontSize: 60,
+    fontSize: FONT.SIZE.hugeText,
   },
 });
 

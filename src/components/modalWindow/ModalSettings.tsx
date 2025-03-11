@@ -1,20 +1,16 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Linking,
-  Modal,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
+import WebView from 'react-native-webview';
 import ModalSettingsProps from '../../types/ModalSettingsProps';
-import {COLOR} from '../../assets/colorTheme';
-import {APP_VERSION} from '../../../App';
+import {COLOR, FONT} from '../../assets/colorTheme';
 
 const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
+  const [isWebViewVisible, setIsWebViewVisible] = useState(false);
+
   const handlePress = () => {
-    Linking.openURL('https://gitlab.com/web4450122/weather-mobile-app');
+    setIsWebViewVisible(true);
   };
+
   return (
     <View style={styles.container}>
       <Modal
@@ -25,11 +21,7 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
           onClose();
         }}>
         <View style={styles.modalBackground}>
-          <View
-            style={{
-              ...styles.modalView,
-              backgroundColor: COLOR.SECONDARY_COLOR,
-            }}>
+          <View style={styles.modalView}>
             <Text style={styles.textHead}>О приложении</Text>
             <Text style={styles.modalText}>
               Приложение для отображения погоды
@@ -37,20 +29,28 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
             <Text style={styles.modalText}>
               <Text style={styles.developer}>Разработчик</Text> -{' '}
               <Text onPress={handlePress} style={styles.nevion}>
-                Nevion Soft
+                Nevionn
               </Text>
             </Text>
-            <Text style={styles.modalText}>Версия {APP_VERSION}</Text>
+            <Text style={styles.modalText}>Версия 2.3.2</Text>
             <TouchableOpacity
-              style={{
-                ...styles.openButton,
-                backgroundColor: COLOR.BUTTON_COLOR,
-              }}
+              style={styles.closeButton}
               onPress={() => onClose()}>
               <Text style={styles.textButton}>Закрыть</Text>
             </TouchableOpacity>
           </View>
         </View>
+      </Modal>
+
+      <Modal visible={isWebViewVisible} animationType="slide">
+        <WebView
+          source={{uri: 'https://gitlab.com/web4450122/weather-mobile-app'}}
+        />
+        <TouchableOpacity
+          style={styles.openWeViewButton}
+          onPress={() => setIsWebViewVisible(false)}>
+          <Text style={styles.textButton}>Закрыть</Text>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLOR.SECONDARY_COLOR,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -82,25 +83,32 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  openButton: {
+  closeButton: {
     borderRadius: 20,
     padding: 11,
     width: '35%',
     elevation: 2,
+    backgroundColor: COLOR.BUTTON_COLOR,
+  },
+  openWeViewButton: {
+    padding: 11,
+    backgroundColor: 'black',
   },
   textButton: {
     color: 'white',
     textAlign: 'center',
+    fontSize: FONT.SIZE.defaultText,
   },
   textHead: {
     color: 'white',
     marginBottom: 15,
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: FONT.SIZE.headerText,
   },
   developer: {
     color: 'white',
+    fontSize: FONT.SIZE.defaultText,
   },
   nevion: {
     color: 'pink',
@@ -110,6 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     color: 'white',
+    fontSize: FONT.SIZE.defaultText,
   },
 });
 

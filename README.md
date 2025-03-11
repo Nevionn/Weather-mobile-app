@@ -1,4 +1,4 @@
-# Open Source Project by Nevion Soft
+# Open Source Project by Nevionn
 
 Мобильное приложения для отображения погоды
 
@@ -14,7 +14,11 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="Python Logo" width="100" height="100">
 </div>
 
-# Установка из исходников
+# Установка апк файла 📦
+
+Зайти в раздел [релиз](https://gitlab.com/web4450122/weather-mobile-app/-/releases) и скачать файл weather.apk
+
+# Установка из исходников на android
 
 ```bash
 git clone https://gitlab.com/web4450122/weather-mobile-app.git
@@ -22,25 +26,13 @@ git clone https://gitlab.com/web4450122/weather-mobile-app.git
 cd weather-mobile-app
 
 npm install
+
+npx react-native start
+
+запуск на андроид: a
 ```
-
-## Запуск на андроид эмуляторе 
-
-```bash
-npx react-native run-android
-```
-
-## Запуск на реальном андроид устройстве
-
-```bash
-npm run android
-```
-
-# Установка апк файла
-
-Зайти в раздел [релиз](https://gitlab.com/web4450122/weather-mobile-app/-/releases) и скачать файл weather.apk
 
 ## ССЫЛКИ
 
-  [<img src="https://gitlab.com/prolinux410/owl_dots/-/raw/main/.img/git_tg.png?ref_type=heads" width="100">](https://t.me/ancient_nevionn)
-  [<img src="https://gitlab.com/prolinux410/owl_dots/-/raw/main/.img/git_coffee.png?ref_type=heads" width="100">](https://www.donationalerts.com/r/nevion)
+[<img src="https://gitlab.com/prolinux410/owl_dots/-/raw/main/.img/git_tg.png?ref_type=heads" width="100">](https://t.me/ancient_nevionn)
+[<img src="https://gitlab.com/prolinux410/owl_dots/-/raw/main/.img/git_coffee.png?ref_type=heads" width="100">](https://www.donationalerts.com/r/nevion)

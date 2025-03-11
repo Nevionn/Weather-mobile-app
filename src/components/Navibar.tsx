@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getCity} from '../assets/utils/storageUtils';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
 import ModalSettings from './modalWindow/ModalSettings';
 import ModalSelectCity from './modalWindow/ModalSelectCity';
+import {FONT} from '../assets/colorTheme';
 
 const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
@@ -40,20 +41,16 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   };
 
   useEffect(() => {
-    const loadCity = async () => {
-      try {
-        const savedCity = await AsyncStorage.getItem('city');
-        if (savedCity) {
-          setSelectedCity(savedCity);
-        } else {
-          console.log('значение не найдено');
-        }
-      } catch (error) {
-        console.error('ошибка при получение city из хранилища:', error);
+    const fetchCity = async () => {
+      const storedCity = await getCity();
+      if (storedCity) {
+        setSelectedCity(storedCity);
+      } else {
+        console.log('значение city не найдено');
       }
     };
 
-    loadCity();
+    fetchCity();
   }, []);
 
   const statusBarHeight: any = StatusBar.currentHeight;
@@ -98,17 +95,16 @@ const styles = StyleSheet.create({
     right: 0,
     height: 50,
     width: '100%',
-    backgroundColor: 'transparent',
     zIndex: 10,
   },
   textAddNewCity: {
     color: 'white',
-    fontSize: 28,
+    fontSize: FONT.SIZE.iconText,
     fontWeight: 'bold',
   },
   textCity: {
     color: 'white',
-    fontSize: 18,
+    fontSize: FONT.SIZE.pickCityText,
     fontWeight: 'bold',
     textShadowColor: 'black',
     textShadowOffset: {width: 1, height: 1},

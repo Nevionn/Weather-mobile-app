@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import Svg, {Line, Circle, Path} from 'react-native-svg';
+import Svg, {Circle, Path} from 'react-native-svg';
 import DaylightInfoProps from '../types/DaylightInfoProps';
+import {COLOR, FONT} from '../assets/colorTheme';
 
 const parseTime = (time: string): number => {
   const [hours, minutes] = time.split(':').map(Number);
@@ -17,7 +18,6 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
   const sunriseTime = parseTime(sunrise);
   const sunsetTime = parseTime(sunset);
   const current = parseTime(currentTime);
-  // const current = 18;
 
   const t = (current - sunriseTime) / (sunsetTime - sunriseTime);
 
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 20,
     borderRadius: 10,
-    backgroundColor: 'rgba(192,217,245, 0.6)',
+    backgroundColor: COLOR.RGBA.dark,
   },
   infoContainerText: {
     flexDirection: 'row',
@@ -67,16 +67,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   timeText: {
-    fontSize: 16,
+    fontSize: FONT.SIZE.headerText,
     color: 'white',
   },
   labelText: {
-    fontSize: 18,
+    fontSize: FONT.SIZE.headerText + 2,
     color: 'white',
     textAlign: 'center',
   },
   durationText: {
-    fontSize: 16,
+    fontSize: FONT.SIZE.headerText,
     color: 'white',
     marginTop: 4,
   },
