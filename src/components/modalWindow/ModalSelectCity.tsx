@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,9 +8,15 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
+import {
+  loadFavoriteCities,
+  uploadFavoriteCities,
+} from '../../assets/utils/storageUtils';
 import {COLOR} from '../../assets/colorTheme';
 import ModalAddCityProps from '../../types/ModalAddCityProps';
 import cityData from '../../assets/city.json';
+import SvgFavorites from '../icons/SvgFavorites';
+import SvgNotMarkFavorites from '../icons/SvgNotMarkFavorites';
 
 const ModalSelectCity: React.FC<ModalAddCityProps> = ({
   isVisible,
@@ -19,29 +25,91 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
 }) => {
   const [searchText, setSearchText] = useState('');
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
+  const [favoriteCities, setFavoriteCities] = useState<string[]>([]);
 
   const cities = cityData
     .map(city => city.city)
     .filter((name): name is string => typeof name === 'string');
 
   useEffect(() => {
-    setFilteredCities(cities);
+    // Загружаем избранные города при монтировании
+    const fetchFavoriteCities = async () => {
+      const favoriteCities = await loadFavoriteCities();
+      if (favoriteCities) {
+        setFavoriteCities(favoriteCities);
+      }
+    };
+
+    if (isVisible) {
+      fetchFavoriteCities();
+    }
   }, [isVisible]);
 
-  const handleSearch = (text: string) => {
+  // Обновляем `filteredCities` при изменении `searchText` или `favoriteCities`
+  useEffect(() => {
+    updateFilteredCities(searchText);
+  }, [isVisible, favoriteCities]);
+
+  const updateFilteredCities = (text: string) => {
     setSearchText(text);
-    setFilteredCities(
-      cities.filter(city => city.toLowerCase().includes(text.toLowerCase())),
+
+    const searchResult = cities.filter(city =>
+      city.toLowerCase().includes(text.toLowerCase()),
     );
+
+    // Разделение на избранные и обычные
+    const sortedCities = [
+      ...favoriteCities.filter(city => searchResult.includes(city)),
+      ...searchResult.filter(city => !favoriteCities.includes(city)),
+    ];
+    setFilteredCities(sortedCities);
+  };
+
+  const handleSearch = (text: string) => {
+    updateFilteredCities(text);
   };
 
   const handleCitySelect = (city: string) => {
-    const trimmedCity = city.trim();
-    onCitySelect(trimmedCity);
+    onCitySelect(city.trim());
     setSearchText('');
-    setFilteredCities(cities);
+    updateFilteredCities('');
     onClose();
   };
+
+  // Переключение избранного города и сохранение в AsyncStorage
+  const toggleFavorite = async (city: string) => {
+    const updatedFavorites = favoriteCities.includes(city)
+      ? favoriteCities.filter(c => c !== city)
+      : [...favoriteCities, city];
+
+    setFavoriteCities(updatedFavorites);
+
+    await uploadFavoriteCities(updatedFavorites);
+  };
+
+  const renderItem = useCallback(
+    ({item}: {item: string}) => {
+      return (
+        <>
+          <TouchableOpacity
+            style={styles.buttonCity}
+            onPress={() => handleCitySelect(item)}>
+            <Text style={styles.cityText}>{item}</Text>
+            <TouchableOpacity
+              onPress={() => toggleFavorite(item)}
+              style={styles.buttomFavorites}>
+              {favoriteCities.includes(item) ? (
+                <SvgFavorites />
+              ) : (
+                <SvgNotMarkFavorites />
+              )}
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </>
+      );
+    },
+    [favoriteCities],
+  );
 
   return (
     <View style={styles.container}>
@@ -51,11 +119,7 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
         visible={isVisible}
         onRequestClose={onClose}>
         <View style={styles.modalBackground}>
-          <View
-            style={{
-              ...styles.modalView,
-              backgroundColor: COLOR.SECONDARY_COLOR,
-            }}>
+          <View style={styles.modalView}>
             <Text style={styles.textHead}>Выберите город</Text>
             <TextInput
               style={styles.input}
@@ -64,32 +128,23 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
               value={searchText}
               onChangeText={handleSearch}
             />
-            <FlatList
+            <FlatList<string>
               data={filteredCities}
               keyExtractor={(item, index) => `${item}_${index}`}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  style={styles.cityItem}
-                  onPress={() => handleCitySelect(item)}>
-                  <Text style={styles.cityText}>{item}</Text>
-                </TouchableOpacity>
-              )}
+              renderItem={renderItem}
+              getItemLayout={(data, index) => ({
+                length: 50,
+                offset: 50 * index,
+                index,
+              })}
             />
             <View style={styles.itemForButtons}>
               <TouchableOpacity
-                style={{
-                  ...styles.openButton,
-                  backgroundColor: COLOR.BUTTON_COLOR,
-                }}
+                style={styles.openButton}
                 onPress={() => handleCitySelect(searchText)}>
                 <Text style={styles.textButton}>Принять</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  ...styles.openButton,
-                  backgroundColor: COLOR.BUTTON_COLOR,
-                }}
-                onPress={onClose}>
+              <TouchableOpacity style={styles.openButton} onPress={onClose}>
                 <Text style={styles.textButton}>Закрыть</Text>
               </TouchableOpacity>
             </View>
@@ -117,6 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLOR.SECONDARY_COLOR,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -139,6 +195,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginTop: 20,
     marginHorizontal: 10,
+    backgroundColor: COLOR.BUTTON_COLOR,
   },
   textButton: {
     color: 'white',
@@ -161,12 +218,17 @@ const styles = StyleSheet.create({
     color: 'white',
     width: '100%',
   },
-  cityItem: {
+  buttonCity: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
     padding: 10,
-    width: 300,
+    width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    backgroundColor: 'transparent',
+  },
+  buttomFavorites: {
+    padding: 10,
   },
   cityText: {
     color: 'white',
