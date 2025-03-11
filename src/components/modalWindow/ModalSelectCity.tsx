@@ -137,6 +137,9 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
                 offset: 50 * index,
                 index,
               })}
+              windowSize={5}
+              initialNumToRender={10}
+              maxToRenderPerBatch={10}
             />
             <View style={styles.itemForButtons}>
               <TouchableOpacity
