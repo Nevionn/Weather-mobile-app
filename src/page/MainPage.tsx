@@ -130,7 +130,7 @@ const MainPage = () => {
         ss ?? '',
       );
     },
-    [currentWeather],
+    [currentWeather, localTime, sr, ss],
   );
 
   return (
