@@ -12,13 +12,15 @@ import {
 const {width} = Dimensions.get('window');
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
+import {DailyForecast} from '../assets/utils/weekleForecast';
 import {WindDirection} from '../components/windDirection';
 import {getIconWeatherBg} from '../assets/fonWeatherBg';
 import {weatherImage} from '../assets/objectWeatherImage';
 import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
-import getWeather from '../assets/networkRequest';
+import getWeather from '../assets/utils/forecast';
+import {fetchAndProcessForecast} from '../assets/utils/weekleForecast';
 import {getCity, saveCity} from '../assets/utils/storageUtils';
 import {COLOR, FONT} from '../assets/colorTheme';
 
@@ -26,6 +28,11 @@ const MainPage = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
     null,
   );
+  const [forecast, setForecast] = useState<Record<
+    string,
+    DailyForecast
+  > | null>(null);
+
   const [sr, setSr] = useState<string | null>(null);
   const [ss, setSs] = useState<string | null>(null);
   const [localTime, setLocalTime] = useState<string | null>(null);
@@ -75,9 +82,9 @@ const MainPage = () => {
   const onRefreshApp = useCallback(() => {
     if (!city) return;
     setRefreshing(true);
-    getWeather({city, setErrorStatus, setCurrentWeather})
-      .catch(error => console.error('Ошибка при обновлении:', error))
-      .finally(() => setRefreshing(false));
+    // getWeather({city, setErrorStatus, setCurrentWeather})
+    //   .catch(error => console.error('Ошибка при обновлении:', error))
+    //   .finally(() => setRefreshing(false));
   }, [city]);
 
   useEffect(() => {
@@ -106,13 +113,19 @@ const MainPage = () => {
   useEffect(() => {
     if (!city) return;
 
-    const fetchData = async () => {
+    const fetchForecast = async () => {
       await getWeather({city, setErrorStatus, setCurrentWeather});
     };
+    // fetchForecast();
 
-    fetchData();
-    const intervalId = setInterval(fetchData, 600000); // Обновлять данные каждые 10 минут
+    const fetchWeeklyForecast = async () => {
+      const weeklyForecast = await fetchAndProcessForecast(city);
+      setForecast(weeklyForecast);
+    };
+    // fetchWeeklyForecast();
 
+    // Обновлять данные каждые 10 минут
+    const intervalId = setInterval(fetchForecast, 600000);
     return () => clearInterval(intervalId);
   }, [city]);
 
@@ -164,6 +177,16 @@ const MainPage = () => {
             {currentWeather?.weather[0].description}
           </Text>
           <Text style={styles.textError}>{errorStatus}</Text>
+        </View>
+        <View
+          style={{
+            height: 200,
+            width: '90%',
+            backgroundColor: 'green',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text>TEST</Text>
         </View>
         <View style={styles.gridContainer}>
           <View style={styles.paramsGrid}>
@@ -217,9 +240,10 @@ const MainPage = () => {
 const styles = StyleSheet.create({
   root: {
     flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollView: {
-    backgroundColor: 'transparent',
     alignItems: 'center',
   },
   backgroundImage: {
