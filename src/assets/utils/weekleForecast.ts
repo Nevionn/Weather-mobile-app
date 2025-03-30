@@ -36,7 +36,7 @@ export interface DailyForecast {
   humidity: number;
 }
 
-const getDayLabel = (dateStr: string, index: number): string => {
+export const getDayLabel = (dateStr: string, index: number): string => {
   const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
   const parts = dateStr.split('.');

@@ -5,6 +5,7 @@ import {
   Text,
   View,
   ScrollView,
+  FlatList,
   RefreshControl,
   ImageBackground,
   Dimensions,
@@ -20,6 +21,7 @@ import {convertTimeStamp} from '../assets/converTimeStamp';
 import DaylightInfo from '../components/DaylightInfo';
 import {getDaylightDuration} from '../assets/dailyLightDuration';
 import getWeather from '../assets/utils/forecast';
+import {getDayLabel} from '../assets/utils/weekleForecast';
 import {fetchAndProcessForecast} from '../assets/utils/weekleForecast';
 import {getCity, saveCity} from '../assets/utils/storageUtils';
 import {COLOR, FONT} from '../assets/colorTheme';
@@ -114,7 +116,7 @@ const MainPage = () => {
     if (!city) return;
 
     const fetchForecast = async () => {
-      await getWeather({city, setErrorStatus, setCurrentWeather});
+      // await getWeather({city, setErrorStatus, setCurrentWeather});
     };
     // fetchForecast();
 
@@ -122,7 +124,7 @@ const MainPage = () => {
       const weeklyForecast = await fetchAndProcessForecast(city);
       setForecast(weeklyForecast);
     };
-    // fetchWeeklyForecast();
+    fetchWeeklyForecast();
 
     // Обновлять данные каждые 10 минут
     const intervalId = setInterval(fetchForecast, 600000);
@@ -145,6 +147,30 @@ const MainPage = () => {
     },
     [currentWeather, localTime, sr, ss],
   );
+
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: [string, DailyForecast];
+    index: number;
+  }) => {
+    const [date, data] = item;
+    const dayLabel = getDayLabel(date, index);
+
+    return (
+      <View style={styles.weeklyForecastItem}>
+        <Text style={styles.weeklyForecastDayLabel}>{dayLabel}</Text>
+        <Text style={styles.weeklyForecastDescription}>{data.description}</Text>
+        <Text style={styles.weeklyForecastTemp}>
+          🔺 {Math.round(data.temp_max)}°C
+        </Text>
+        <Text style={styles.weeklyForecastTemp}>
+          🔻 {Math.round(data.temp_min)}°C
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.root}>
@@ -178,16 +204,13 @@ const MainPage = () => {
           </Text>
           <Text style={styles.textError}>{errorStatus}</Text>
         </View>
-        <View
-          style={{
-            height: 200,
-            width: '90%',
-            backgroundColor: 'green',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>TEST</Text>
-        </View>
+        <FlatList
+          data={forecast ? Object.entries(forecast) : []}
+          keyExtractor={([date]) => date}
+          renderItem={renderItem}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
         <View style={styles.gridContainer}>
           <View style={styles.paramsGrid}>
             <WindDirection
@@ -259,6 +282,28 @@ const styles = StyleSheet.create({
     height: 140,
     width: '100%',
   },
+  weeklyForecastItem: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 5,
+    alignItems: 'center',
+    width: 100, // Ширина карточки
+  },
+  weeklyForecastDayLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  weeklyForecastDescription: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  weeklyForecastTemp: {
+    fontSize: 14,
+    color: 'black',
+  },
+
   gridContainer: {
     height: 340,
     width: width * 1,
