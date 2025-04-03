@@ -1,6 +1,5 @@
 const API_KEY = '61ba104eaa864aa62a033f6643305b6c';
-const BASE_URL =
-  'https://api.openweathermap.org/data/2.5/forecast?units=metric&lang=ru&appid=';
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast?units=metric&lang=ru&appid=';
 
 interface WeatherAPIResponseItem {
   dt: number;
@@ -49,14 +48,14 @@ export const getDayLabel = (dateStr: string, index: number): string => {
   const date = new Date(year, month, day);
   if (isNaN(date.getTime())) return 'Ошибка даты';
 
-  const dayOfWeek = date.getDay();
+  const today = new Date().getDay();
+  const dayOfWeek = (today + index) % 7;
+
   return index === 0 ? 'Сегодня' : days[dayOfWeek];
 };
 
 // Функция для получения прогноза погоды
-const getForecastData = async (
-  cityName: string,
-): Promise<WeatherForecastWeeklyData[]> => {
+const getForecastData = async (cityName: string): Promise<WeatherForecastWeeklyData[]> => {
   try {
     const url = `${BASE_URL}${API_KEY}&q=${cityName}`;
     const response = await fetch(url);
@@ -83,10 +82,25 @@ const getForecastData = async (
 };
 
 // Функция для обработки полученных данных прогноза
-const processForecastData = (
-  data: WeatherForecastWeeklyData[],
-): Record<string, DailyForecast> => {
+const processForecastData = (data: WeatherForecastWeeklyData[]): Record<string, DailyForecast> => {
   const dailyForecast: Record<string, DailyForecast> = {};
+
+  if (data.length === 0) {
+    // Заглушка на 6 дней, если данных нет
+    const placeholderDates = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+    placeholderDates.forEach(date => {
+      dailyForecast[date] = {
+        temp_sum: 0,
+        temp_min: 0,
+        temp_max: 0,
+        count: 1,
+        description: 'Нет данных',
+        wind_speed: 0,
+        humidity: 0,
+      };
+    });
+    return dailyForecast;
+  }
 
   data.forEach(item => {
     const date = item.date.split(',')[0];
@@ -105,30 +119,9 @@ const processForecastData = (
 
     // Обновляем среднюю температуру, мин/макс значения
     dailyForecast[date].temp_sum += item.temp;
-    dailyForecast[date].temp_min = Math.min(
-      dailyForecast[date].temp_min,
-      item.temp_min,
-    );
-    dailyForecast[date].temp_max = Math.max(
-      dailyForecast[date].temp_max,
-      item.temp_max,
-    );
+    dailyForecast[date].temp_min = Math.min(dailyForecast[date].temp_min, item.temp_min);
+    dailyForecast[date].temp_max = Math.max(dailyForecast[date].temp_max, item.temp_max);
     dailyForecast[date].count += 1;
-  });
-
-  // Вывод в консоль
-  Object.entries(dailyForecast).forEach(([date, data], index) => {
-    const dayLabel = getDayLabel(date, index);
-
-    console.log(`--------------------`);
-    console.log(`${dayLabel}: ${date}`);
-    console.log(
-      `🌡 Средняя температура: ${(data.temp_sum / data.count).toFixed(1)}°C`,
-    );
-    console.log(`🔻 Мин: ${data.temp_min}°C, 🔺 Макс: ${data.temp_max}°C`);
-    console.log(`🌤 Погода: ${data.description}`);
-    console.log(`💨 Ветер: ${data.wind_speed} м/с`);
-    console.log(`💧 Влажность: ${data.humidity}%`);
   });
 
   return dailyForecast;
