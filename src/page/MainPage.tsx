@@ -116,17 +116,17 @@ const MainPage = () => {
     const fetchForecast = async () => {
       await getWeather({city, setErrorStatus, setCurrentWeather});
     };
-    // fetchForecast();
+    fetchForecast();
 
     const fetchWeeklyForecast = async () => {
       const weeklyForecast = await fetchAndProcessForecast(city);
       setForecast(weeklyForecast);
     };
-    // fetchWeeklyForecast();
+    fetchWeeklyForecast();
 
     // Обновлять данные каждые 10 минут
-    // const intervalId = setInterval(fetchForecast, 600000);
-    // return () => clearInterval(intervalId);
+    const intervalId = setInterval(fetchForecast, 600000);
+    return () => clearInterval(intervalId);
   }, [city]);
 
   const weatherBg = useMemo(
