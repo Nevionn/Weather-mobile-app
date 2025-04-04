@@ -12,8 +12,9 @@ export const weatherImage = {
   },
   night: {
     ночноеНебоЧистое: require('../image/night-clear-sky.webp'),
-    ночноеНебоСОблаками: require('../image/night-cloudy-sky-test.webp'),
+    ночноеНебоСОблаками: require('../image/night-cloudy-sky.webp'),
     ночноеЧистоеНебоЗимой: require('../image/winter-night-clear-sky.webp'),
+    вечернееНебоОблачноСпрояснениями: require('../image/eveningSkyCloudyWithClearings.webp'),
   },
   ночноеДождливоеНебо: require('../image/night-rain-sky.webp'),
 };

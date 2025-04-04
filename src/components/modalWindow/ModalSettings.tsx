@@ -1,14 +1,11 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
-import WebView from 'react-native-webview';
+import React from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Modal, Linking} from 'react-native';
 import ModalSettingsProps from '../../types/ModalSettingsProps';
 import {COLOR, FONT} from '../../assets/colorTheme';
 
 const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
-  const [isWebViewVisible, setIsWebViewVisible] = useState(false);
-
   const handlePress = () => {
-    setIsWebViewVisible(true);
+    Linking.openURL('https://gitlab.com/web4450122/weather-mobile-app');
   };
 
   return (
@@ -23,35 +20,24 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
         <View style={styles.modalBackground}>
           <View style={styles.modalView}>
             <Text style={styles.textHead}>О приложении</Text>
-            <Text style={styles.modalText}>
-              Приложение для отображения погоды
-            </Text>
+            <Text style={styles.modalText}>Приложение для получения прогноза погоды</Text>
             <Text style={styles.modalText}>
               <Text style={styles.developer}>Разработчик</Text> -{' '}
               <Text onPress={handlePress} style={styles.nevion}>
                 Nevionn
               </Text>
             </Text>
-            <Text style={styles.modalText}>Версия 2.3.2</Text>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => onClose()}>
+            <Text style={styles.modalText}>Версия 2.4.3</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}>
               <Text style={styles.textButton}>Закрыть</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      <Modal visible={isWebViewVisible} animationType="slide">
-        <WebView
-          source={{uri: 'https://gitlab.com/web4450122/weather-mobile-app'}}
-        />
-        <TouchableOpacity
-          style={styles.openWeViewButton}
-          onPress={() => setIsWebViewVisible(false)}>
-          <Text style={styles.textButton}>Закрыть</Text>
-        </TouchableOpacity>
-      </Modal>
+      <TouchableOpacity style={styles.openLinkButton} onPress={() => handlePress}>
+        <Text style={styles.textButton}>Закрыть</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -90,7 +76,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     backgroundColor: COLOR.BUTTON_COLOR,
   },
-  openWeViewButton: {
+  openLinkButton: {
     padding: 11,
     backgroundColor: 'black',
   },

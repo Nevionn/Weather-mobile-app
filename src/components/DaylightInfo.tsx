@@ -31,19 +31,22 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
     <View style={styles.container}>
       <Svg height="80" width="200">
         {/* Дуга для светового дня */}
-        <Path
-          d="M 10 80 Q 100 10, 190 80"
-          stroke="orange"
-          strokeWidth="2"
-          fill="none"
-        />
+        <Path d="M 10 80 Q 100 10, 190 80" stroke="orange" strokeWidth="2" fill="none" />
         {/* Круг для текущего положения солнца */}
         <Circle cx={cx} cy={cy} r="5" fill="orange" />
       </Svg>
       <View style={styles.infoContainerText}>
-        <Text style={styles.timeText}>{sunrise}</Text>
-        <Text style={styles.labelText}>Световой день</Text>
-        <Text style={styles.timeText}>{sunset}</Text>
+        <View style={styles.srItem}>
+          <Text style={styles.timeTextSR}>{sunrise}</Text>
+        </View>
+
+        <View style={styles.durationDayItem}>
+          <Text style={styles.labelText}>Световой день</Text>
+        </View>
+
+        <View style={styles.ssItem}>
+          <Text style={styles.timeTextSS}>{sunset}</Text>
+        </View>
       </View>
       <Text style={styles.durationText}>{daylightDuration}</Text>
     </View>
@@ -53,6 +56,7 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 144,
+    width: '90%',
     alignItems: 'center',
     marginHorizontal: 18,
     marginTop: 5,
@@ -62,9 +66,28 @@ const styles = StyleSheet.create({
   },
   infoContainerText: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 40,
+  },
+  timeTextSR: {
+    fontSize: FONT.SIZE.headerText,
+    color: 'white',
+  },
+  timeTextSS: {
+    fontSize: FONT.SIZE.headerText,
+    color: 'white',
+  },
+  srItem: {
+    position: 'absolute',
+    left: 28,
+    zIndex: 1,
+  },
+  ssItem: {
+    position: 'absolute',
+    right: 25,
+  },
+  durationDayItem: {
+    flex: 1,
+    alignItems: 'center',
   },
   timeText: {
     fontSize: FONT.SIZE.headerText,
@@ -73,7 +96,6 @@ const styles = StyleSheet.create({
   labelText: {
     fontSize: FONT.SIZE.headerText + 2,
     color: 'white',
-    textAlign: 'center',
   },
   durationText: {
     fontSize: FONT.SIZE.headerText,
