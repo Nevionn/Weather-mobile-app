@@ -34,10 +34,6 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
           </View>
         </View>
       </Modal>
-
-      <TouchableOpacity style={styles.openLinkButton} onPress={() => handlePress}>
-        <Text style={styles.textButton}>Закрыть</Text>
-      </TouchableOpacity>
     </View>
   );
 };

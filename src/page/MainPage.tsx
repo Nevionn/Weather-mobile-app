@@ -177,7 +177,7 @@ const MainPage = () => {
 
         {/* Блок с основной погодной информацией */}
         <View
-          style={[styles.captureMainViewItem, {height: screenHeight - insets.top - insets.bottom}]}>
+          style={[styles.captureMainViewItem, {height: screenHeight + insets.top + insets.bottom}]}>
           {/* Модуль текущей температуры */}
           <View style={styles.positionItemForWeatherInfo}>
             <View style={styles.mainWeatherInfoItem}>
