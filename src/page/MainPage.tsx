@@ -17,7 +17,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import NaviBar from '../components/Navibar';
 import WeatherData from '../types/WeatherData';
 import {DailyForecast} from '../assets/utils/weekleForecast';
-import {WindDirection} from '../components/windDirection';
+import {WindDirection} from '../components/WindDirection';
 import {getIconWeatherBg} from '../assets/fonWeatherBg';
 import {weatherImage} from '../assets/objectWeatherImage';
 import {convertTimeStamp} from '../assets/converTimeStamp';
@@ -116,17 +116,17 @@ const MainPage = () => {
     const fetchForecast = async () => {
       await getWeather({city, setErrorStatus, setCurrentWeather});
     };
-    fetchForecast();
+    // fetchForecast();
 
     const fetchWeeklyForecast = async () => {
       const weeklyForecast = await fetchAndProcessForecast(city);
       setForecast(weeklyForecast);
     };
-    fetchWeeklyForecast();
+    // fetchWeeklyForecast();
 
     // Обновлять данные каждые 10 минут
-    const intervalId = setInterval(fetchForecast, 600000);
-    return () => clearInterval(intervalId);
+    // const intervalId = setInterval(fetchForecast, 600000);
+    // return () => clearInterval(intervalId);
   }, [city]);
 
   const weatherBg = useMemo(
@@ -177,7 +177,7 @@ const MainPage = () => {
 
         {/* Блок с основной погодной информацией */}
         <View
-          style={[styles.captureMainViewItem, {height: screenHeight + insets.top + insets.bottom}]}>
+          style={[styles.captureMainViewItem, {height: screenHeight - insets.top - insets.bottom}]}>
           {/* Модуль текущей температуры */}
           <View style={styles.positionItemForWeatherInfo}>
             <View style={styles.mainWeatherInfoItem}>
@@ -199,13 +199,19 @@ const MainPage = () => {
           {/* Модуль с прогнозом погоды на 6 дней */}
           <View style={styles.weeklyForecastContainer}>
             <Text style={styles.weeklyForecastHeader}>Прогноз на 6 дней</Text>
-            <FlatList
-              data={forecast ? Object.entries(forecast) : []}
-              keyExtractor={([date]) => date}
-              renderItem={renderItemWeeklyDay}
-              showsVerticalScrollIndicator={false}
-              nestedScrollEnabled={true}
-            />
+            {forecast ? (
+              <FlatList
+                data={forecast ? Object.entries(forecast) : []}
+                keyExtractor={([date]) => date}
+                renderItem={renderItemWeeklyDay}
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled={true}
+              />
+            ) : (
+              <View style={styles.weeklyForecastContainerPlug}>
+                <Text style={styles.textIndicator}>Нет данных о прогнозе</Text>
+              </View>
+            )}
           </View>
         </View>
         {/* Блок с дополнительными погодными данными*/}
@@ -295,6 +301,15 @@ const styles = StyleSheet.create({
   weeklyForecastContainer: {
     width: '100%',
     position: 'absolute',
+    bottom: 4,
+    backgroundColor: COLOR.RGBA.dark,
+    borderRadius: 10,
+  },
+  weeklyForecastContainerPlug: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: 200,
     bottom: 4,
     backgroundColor: COLOR.RGBA.dark,
     borderRadius: 10,

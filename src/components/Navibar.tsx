@@ -1,11 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  StatusBar,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, StatusBar} from 'react-native';
 import {getCity} from '../assets/utils/storageUtils';
 import NaviBarProps from '../types/NaviBarProps';
 import SvgSettings from './icons/SvgSettings';
@@ -58,22 +52,15 @@ const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   return (
     <>
       <View style={[styles.navibar, {top: statusBarHeight - 5}]}>
-        <TouchableOpacity
-          onPress={() => openSelectCityModal()}
-          style={styles.touchArea}>
+        <TouchableOpacity onPress={() => openSelectCityModal()} style={styles.touchArea}>
           <Text style={styles.textAddNewCity}>+</Text>
         </TouchableOpacity>
         <Text style={styles.textCity}>{selectedCity}</Text>
-        <TouchableOpacity
-          onPress={() => openSettingsMenu()}
-          style={styles.touchArea}>
+        <TouchableOpacity onPress={() => openSettingsMenu()} style={styles.touchArea}>
           <SvgSettings />
         </TouchableOpacity>
       </View>
-      <ModalSettings
-        isVisible={isSettingsModalVisible}
-        onClose={closeSettingsMenu}
-      />
+      <ModalSettings isVisible={isSettingsModalVisible} onClose={closeSettingsMenu} />
       <ModalSelectCity
         isVisible={isAddCityModalVisible}
         onClose={closeSelectCityModal}
