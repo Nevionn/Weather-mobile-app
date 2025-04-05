@@ -27,17 +27,13 @@ const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
                 Nevionn
               </Text>
             </Text>
-            <Text style={styles.modalText}>Версия 2.4.3</Text>
+            <Text style={styles.modalText}>Версия 2.4.4</Text>
             <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}>
               <Text style={styles.textButton}>Закрыть</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
-      <TouchableOpacity style={styles.openLinkButton} onPress={() => handlePress}>
-        <Text style={styles.textButton}>Закрыть</Text>
-      </TouchableOpacity>
     </View>
   );
 };

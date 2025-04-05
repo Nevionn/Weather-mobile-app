@@ -48,6 +48,10 @@ const MainPage = () => {
     'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation',
   ]);
 
+  const handleCitySelect = (_city: string) => {
+    setCity(_city);
+  };
+
   useEffect(
     function setLocalTimeCity() {
       if (!currentWeather?.sys) return;
@@ -75,17 +79,39 @@ const MainPage = () => {
     [currentWeather],
   );
 
-  const handleCitySelect = (_city: string) => {
-    setCity(_city);
-  };
+  const fetchForecast = useCallback(async () => {
+    if (!city) return;
+    await getWeather({city, setErrorStatus, setCurrentWeather});
+  }, [city]);
+
+  const fetchWeeklyForecast = useCallback(async () => {
+    if (!city) return;
+    const weeklyForecast = await fetchAndProcessForecast(city);
+    setForecast(weeklyForecast);
+  }, [city]);
+
+  useEffect(() => {
+    if (!city) return;
+
+    const updateAllForecast = () => {
+      fetchForecast();
+      fetchWeeklyForecast();
+    };
+
+    updateAllForecast();
+
+    // Обновлять данные каждые 10 минут
+    const intervalId = setInterval(updateAllForecast, 600000);
+    return () => clearInterval(intervalId);
+  }, [city, fetchForecast]);
 
   const onRefreshApp = useCallback(() => {
     if (!city) return;
     setRefreshing(true);
-    getWeather({city, setErrorStatus, setCurrentWeather})
-      .catch(error => console.error('Ошибка при обновлении:', error))
+    Promise.all([fetchForecast(), fetchWeeklyForecast()])
+      .catch((error: string) => console.error('Ошибка при обновлении:', error))
       .finally(() => setRefreshing(false));
-  }, [city]);
+  }, [city, fetchForecast]);
 
   useEffect(() => {
     const fetchCity = async () => {
@@ -96,7 +122,6 @@ const MainPage = () => {
         console.log('значение city не найдено');
       }
     };
-
     fetchCity();
   }, []);
 
@@ -106,27 +131,7 @@ const MainPage = () => {
         await saveCity(city);
       }
     };
-
     saveCityToStorage();
-  }, [city]);
-
-  useEffect(() => {
-    if (!city) return;
-
-    const fetchForecast = async () => {
-      await getWeather({city, setErrorStatus, setCurrentWeather});
-    };
-    fetchForecast();
-
-    const fetchWeeklyForecast = async () => {
-      const weeklyForecast = await fetchAndProcessForecast(city);
-      setForecast(weeklyForecast);
-    };
-    fetchWeeklyForecast();
-
-    // Обновлять данные каждые 10 минут
-    const intervalId = setInterval(fetchForecast, 600000);
-    return () => clearInterval(intervalId);
   }, [city]);
 
   const weatherBg = useMemo(
@@ -177,7 +182,7 @@ const MainPage = () => {
 
         {/* Блок с основной погодной информацией */}
         <View
-          style={[styles.captureMainViewItem, {height: screenHeight - insets.top - insets.bottom}]}>
+          style={[styles.captureMainViewItem, {height: screenHeight + insets.top + insets.bottom}]}>
           {/* Модуль текущей температуры */}
           <View style={styles.positionItemForWeatherInfo}>
             <View style={styles.mainWeatherInfoItem}>
