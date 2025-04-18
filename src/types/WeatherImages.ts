@@ -17,6 +17,7 @@ interface WeatherImages {
     вечернееНебоОблачноСпрояснениями: string;
   };
   ночноеДождливоеНебо: string;
+  пасмурноНочью: string;
 }
 
 export default WeatherImages;

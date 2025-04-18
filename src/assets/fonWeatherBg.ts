@@ -48,7 +48,7 @@ export const getIconWeatherBg = (
     } else if (weatherCode === 802) {
       bgImage = isNight ? weatherObj.night.ночноеНебоСОблаками : weatherObj.облачно;
     } else {
-      bgImage = weatherObj.rain.пасмурно;
+      bgImage = isNight ? weatherObj.пасмурноНочью : weatherObj.rain.пасмурно;
     }
   }
 

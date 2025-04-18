@@ -17,4 +17,5 @@ export const weatherImage = {
     вечернееНебоОблачноСпрояснениями: require('../image/eveningSkyCloudyWithClearings.webp'),
   },
   ночноеДождливоеНебо: require('../image/night-rain-sky.webp'),
+  пасмурноНочью: require('../image/mainly-cloudy-night.webp'),
 };
