@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Svg, {Circle, Path} from 'react-native-svg';
-import DaylightInfoProps from '../types/DaylightInfoProps';
-import {COLOR, FONT} from '../assets/colorTheme';
+import DaylightInfoProps from './DaylightInfoProps';
+import {COLOR, FONT} from '../../app/colorTheme';
 
 const parseTime = (time: string): number => {
   const [hours, minutes] = time.split(':').map(Number);

@@ -1,4 +1,4 @@
-import WeatherData from '../../types/WeatherData';
+import WeatherData from '../../shared/globalTypes/WeatherData';
 
 const API_KEY = '61ba104eaa864aa62a033f6643305b6c';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';

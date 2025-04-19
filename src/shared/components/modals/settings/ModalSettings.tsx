@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Modal, Linking} from 'react-native';
-import ModalSettingsProps from '../../types/ModalSettingsProps';
-import {COLOR, FONT} from '../../assets/colorTheme';
+import ModalSettingsProps from './ModalSettingsProps';
+import {COLOR, FONT} from '../../../../app/colorTheme';
 
 const ModalSettings: React.FC<ModalSettingsProps> = ({isVisible, onClose}) => {
   const handlePress = () => {

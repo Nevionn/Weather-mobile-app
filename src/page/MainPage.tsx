@@ -14,20 +14,20 @@ import {
 const {width} = Dimensions.get('window');
 const screenHeight = Dimensions.get('window').height;
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import NaviBar from '../components/Navibar';
-import WeatherData from '../types/WeatherData';
-import {DailyForecast} from '../assets/utils/weekleForecast';
-import {WindDirection} from '../components/WindDirection';
-import {getIconWeatherBg} from '../assets/fonWeatherBg';
-import {weatherImage} from '../assets/objectWeatherImage';
-import {convertTimeStamp} from '../assets/converTimeStamp';
-import DaylightInfo from '../components/DaylightInfo';
-import {getDaylightDuration} from '../assets/dailyLightDuration';
-import getWeather from '../assets/utils/forecast';
-import {getDayLabel} from '../assets/utils/weekleForecast';
-import {fetchAndProcessForecast} from '../assets/utils/weekleForecast';
-import {getCity, saveCity} from '../assets/utils/storageUtils';
-import {COLOR, FONT} from '../assets/colorTheme';
+import {weatherImage} from '../app/objectWeatherImage';
+import {getCity, saveCity} from '../app/storageUtils';
+import {COLOR, FONT} from '../app/colorTheme';
+import WeatherData from '../shared/globalTypes/WeatherData';
+import {getIconWeatherBg} from '../shared/lib/utils/update-background/updateWeatherBackground';
+import NaviBar from '../widgets/navibar/Navibar';
+import {WindDirection} from '../widgets/wind-direction/WindDirection';
+import DaylightInfo from '../widgets/daylight-info/DaylightInfo';
+import {DailyForecast} from '../features/weekleForecast/weekleForecast';
+import {getDaylightDuration} from '../features/dailyLightDuration/dailyLightDuration';
+import {fetchAndProcessForecast} from '../features/weekleForecast/weekleForecast';
+import {convertTimeStamp} from '../features/converTime/converTimeStamp';
+import {getDayLabel} from '../features/weekleForecast/weekleForecast';
+import getWeather from '../features/forecast/forecast';
 
 const MainPage = () => {
   const insets = useSafeAreaInsets();
@@ -192,7 +192,7 @@ const MainPage = () => {
                 }>
                 {city === null
                   ? 'Выберите город'
-                  : currentWeather?.main.temp !== undefined
+                  : currentWeather?.main?.temp !== undefined
                   ? `${Math.round(currentWeather.main.temp)}°C`
                   : 'Загрузка'}
               </Text>

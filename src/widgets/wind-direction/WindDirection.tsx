@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {COLOR, FONT} from '../assets/colorTheme';
+import {COLOR, FONT} from '../../app/colorTheme';
+import WindDirectionProps from './WindDirectionProps';
 
-export const getWindDirection = (degree: number) => {
+export const getWindDirection = ({degree}: WindDirectionProps): string => {
   if (degree >= 337.5 || degree < 22.5) {
     return 'Северный';
   } else if (degree >= 22.5 && degree < 67.5) {
@@ -23,13 +24,7 @@ export const getWindDirection = (degree: number) => {
   return 'Неизвестный';
 };
 
-export const WindDirection = ({
-  degree,
-  speed,
-}: {
-  degree: number;
-  speed: number;
-}) => {
+export const WindDirection = ({degree, speed}: {degree: number; speed: number}) => {
   if (degree === undefined || speed === undefined) {
     return null;
   }
@@ -37,12 +32,7 @@ export const WindDirection = ({
   return (
     <View style={styles.compassContainer}>
       <View style={styles.compass}>
-        <View
-          style={[
-            styles.arrow,
-            {transform: [{rotate: `${(degree + 180) % 360}deg`}]},
-          ]}
-        />
+        <View style={[styles.arrow, {transform: [{rotate: `${(degree + 180) % 360}deg`}]}]} />
         <View style={styles.directionContainer}>
           <View style={{position: 'absolute', top: 0}}>
             <Text style={styles.textDirectionCompas}>С</Text>
@@ -59,7 +49,7 @@ export const WindDirection = ({
         </View>
       </View>
       <Text style={styles.text}>
-        {getWindDirection(degree)}
+        {getWindDirection({degree})}
         {'\n'}
         {speed} м/с
       </Text>

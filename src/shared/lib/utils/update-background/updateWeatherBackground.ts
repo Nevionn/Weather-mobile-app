@@ -1,4 +1,4 @@
-import WeatherImages from '../types/WeatherImages';
+import WeatherImages from '../../../globalTypes/WeatherImages';
 
 export const getIconWeatherBg = (
   weatherCode: number,
