@@ -20,6 +20,7 @@ import {COLOR, FONT} from '../app/colorTheme';
 import WeatherData from '../shared/globalTypes/WeatherData';
 import {getIconWeatherBg} from '../shared/lib/utils/update-background/updateWeatherBackground';
 import NaviBar from '../widgets/navibar/Navibar';
+import MainTemperature from '../widgets/mainTemperature/mainTemperature';
 import {WindDirection} from '../widgets/wind-direction/WindDirection';
 import DaylightInfo from '../widgets/daylight-info/DaylightInfo';
 import {DailyForecast} from '../features/weekleForecast/weekleForecast';
@@ -81,13 +82,13 @@ const MainPage = () => {
 
   const fetchForecast = useCallback(async () => {
     if (!city) return;
-    await getWeather({city, setErrorStatus, setCurrentWeather});
+    // await getWeather({city, setErrorStatus, setCurrentWeather});
   }, [city]);
 
   const fetchWeeklyForecast = useCallback(async () => {
     if (!city) return;
-    const weeklyForecast = await fetchAndProcessForecast(city);
-    setForecast(weeklyForecast);
+    // const weeklyForecast = await fetchAndProcessForecast(city);
+    // setForecast(weeklyForecast);
   }, [city]);
 
   useEffect(() => {
@@ -178,28 +179,12 @@ const MainPage = () => {
         contentContainerStyle={styles.root}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />}>
         <NaviBar onCitySelect={handleCitySelect} />
-        <ImageBackground source={weatherBg} style={styles.backgroundImage} />
+        {/* <ImageBackground source={weatherBg} style={styles.backgroundImage} /> */}
 
         {/* Блок с основной погодной информацией */}
         <View
           style={[styles.captureMainViewItem, {height: screenHeight + insets.top + insets.bottom}]}>
-          {/* Модуль текущей температуры */}
-          <View style={styles.positionItemForWeatherInfo}>
-            <View style={styles.mainWeatherInfoItem}>
-              <Text
-                style={
-                  currentWeather?.main?.temp !== undefined ? styles.tempText : styles.textIndicator
-                }>
-                {city === null
-                  ? 'Выберите город'
-                  : currentWeather?.main?.temp !== undefined
-                  ? `${Math.round(currentWeather.main.temp)}°C`
-                  : 'Загрузка'}
-              </Text>
-              <Text style={styles.textIndicator}>{currentWeather?.weather[0].description}</Text>
-              <Text style={styles.textError}>{errorStatus}</Text>
-            </View>
-          </View>
+          <MainTemperature currentWeather={currentWeather} city={city} errorStatus={errorStatus} />
 
           {/* Модуль с прогнозом погоды на 6 дней */}
           <View style={styles.weeklyForecastContainer}>
@@ -278,36 +263,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  captureMainViewItem: {
-    flex: 1,
-    width: '90%',
-  },
-  positionItemForWeatherInfo: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: '50%',
-  },
-  scrollView: {
-    alignItems: 'center',
-  },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
   },
-  mainWeatherInfoItem: {
+  scrollView: {
+    alignItems: 'center',
+  },
+  captureMainViewItem: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
-    height: 140,
-    width: '100%',
+    width: '90%',
+    backgroundColor: 'pink',
   },
   weeklyForecastContainer: {
     width: '100%',
     position: 'absolute',
     bottom: 4,
-    backgroundColor: COLOR.RGBA.dark,
+    // backgroundColor: COLOR.RGBA.dark,
+    backgroundColor: 'black',
     borderRadius: 10,
   },
   weeklyForecastContainerPlug: {
@@ -397,16 +373,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'black',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 2,
-  },
-  textError: {
-    color: COLOR.ALERT_COLOR,
-    fontSize: FONT.SIZE.errorText,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  tempText: {
-    color: 'white',
-    fontSize: FONT.SIZE.hugeText,
   },
 });
 
