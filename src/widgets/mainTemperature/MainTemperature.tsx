@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     height: 140,
     width: '100%',
     marginBottom: '50%',
-    backgroundColor: 'green',
   },
   textIndicator: {
     color: 'white',

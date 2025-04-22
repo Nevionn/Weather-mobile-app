@@ -3,10 +3,7 @@ import {StyleSheet, Text, View, FlatList} from 'react-native';
 import {COLOR, FONT} from '../../app/colorTheme';
 import {getDayLabel} from '../../features/weekleForecast/weekleForecast';
 import {DailyForecast} from '../../features/weekleForecast/weekleForecast';
-
-interface WeklyForecastProps {
-  forecast: Record<string, DailyForecast> | null;
-}
+import WeklyForecastProps from './WeklyForecastProps';
 
 const WeklyForecast: React.FC<WeklyForecastProps> = ({forecast}) => {
   const renderItemWeeklyDay = ({item, index}: {item: [string, DailyForecast]; index: number}) => {
@@ -56,8 +53,7 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     bottom: 4,
-    // backgroundColor: COLOR.RGBA.dark,
-    backgroundColor: 'black',
+    backgroundColor: COLOR.RGBA.dark,
     borderRadius: 10,
   },
   weeklyForecastContainerPlug: {

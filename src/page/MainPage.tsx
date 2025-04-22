@@ -5,7 +5,6 @@ import {
   Text,
   View,
   ScrollView,
-  FlatList,
   RefreshControl,
   ImageBackground,
   Dimensions,
@@ -23,6 +22,7 @@ import NaviBar from '../widgets/navibar/Navibar';
 import MainTemperature from '../widgets/mainTemperature/MainTemperature';
 import WeklyForecast from '../widgets/weklyForecast/WeklyForecast';
 import {WindDirection} from '../widgets/wind-direction/WindDirection';
+import AdditionalData from '../widgets/additionalDataBlock/AdditionalData';
 import DaylightInfo from '../widgets/daylight-info/DaylightInfo';
 import {DailyForecast} from '../features/weekleForecast/weekleForecast';
 import {getDaylightDuration} from '../features/dailyLightDuration/dailyLightDuration';
@@ -83,13 +83,13 @@ const MainPage = () => {
 
   const fetchForecast = useCallback(async () => {
     if (!city) return;
-    // await getWeather({city, setErrorStatus, setCurrentWeather});
+    await getWeather({city, setErrorStatus, setCurrentWeather});
   }, [city]);
 
   const fetchWeeklyForecast = useCallback(async () => {
     if (!city) return;
-    // const weeklyForecast = await fetchAndProcessForecast(city);
-    // setForecast(weeklyForecast);
+    const weeklyForecast = await fetchAndProcessForecast(city);
+    setForecast(weeklyForecast);
   }, [city]);
 
   useEffect(() => {
@@ -160,7 +160,7 @@ const MainPage = () => {
         contentContainerStyle={styles.root}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefreshApp} />}>
         <NaviBar onCitySelect={handleCitySelect} />
-        {/* <ImageBackground source={weatherBg} style={styles.backgroundImage} /> */}
+        <ImageBackground source={weatherBg} style={styles.backgroundImage} />
 
         {/* Блок с основной погодной информацией */}
         <View
@@ -177,27 +177,7 @@ const MainPage = () => {
             />
           </View>
           <View style={styles.paramsGrid}>
-            <View style={styles.itemGrid}>
-              <Text style={styles.textIndicator}>
-                Ощущается{'\n'}
-                {currentWeather?.main.feels_like
-                  ? Math.round(currentWeather.main.feels_like * 10) / 10
-                  : ''}
-                °C
-              </Text>
-            </View>
-            <View style={styles.itemGrid}>
-              <Text style={styles.textIndicator}>
-                Облачность{'\n'}
-                {currentWeather?.clouds.all}%
-              </Text>
-            </View>
-            <View style={styles.itemGrid}>
-              <Text style={styles.textIndicator}>
-                Влажность{'\n'}
-                {currentWeather?.main.humidity}%
-              </Text>
-            </View>
+            <AdditionalData currentWeather={currentWeather} />
           </View>
         </View>
         {/* Блок с информацией о световом дне*/}
@@ -240,61 +220,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
-    backgroundColor: 'pink',
-  },
-  weeklyForecastContainer: {
-    width: '100%',
-    position: 'absolute',
-    bottom: 4,
-    // backgroundColor: COLOR.RGBA.dark,
-    backgroundColor: 'black',
-    borderRadius: 10,
-  },
-  weeklyForecastContainerPlug: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: 200,
-    bottom: 4,
-    backgroundColor: COLOR.RGBA.dark,
-    borderRadius: 10,
-  },
-  weeklyForecastItem: {
-    padding: 10,
-    borderRadius: 10,
-    marginHorizontal: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-  },
-  weeklyForecastTextGuidingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  weeklyForecastHeader: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    padding: 10,
-    marginLeft: 2,
-  },
-  weeklyForecastDayLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  weeklyForecastDescription: {
-    fontSize: 14,
-    color: 'white',
-    textShadowColor: 'rgba(132, 126, 126, 0.5)',
-    textShadowOffset: {width: 1, height: 1},
-    textShadowRadius: 4,
-  },
-  weeklyForecastTemp: {
-    fontSize: 14,
-    color: 'white',
   },
   gridContainer: {
     height: 340,
@@ -305,10 +230,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   paramsGrid: {
-    width: width * 0.45,
+    width: width * 0.46,
     flexDirection: 'column',
     margin: 4,
-    marginLeft: 6,
+    marginLeft: 1,
   },
   itemGrid: {
     flex: 1,
@@ -325,9 +250,6 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 10,
     backgroundColor: COLOR.RGBA.dark,
-  },
-  separatorWidth: {
-    width: 14,
   },
   textIndicator: {
     color: 'white',
