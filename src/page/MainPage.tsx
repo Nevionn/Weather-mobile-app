@@ -20,7 +20,8 @@ import {COLOR, FONT} from '../app/colorTheme';
 import WeatherData from '../shared/globalTypes/WeatherData';
 import {getIconWeatherBg} from '../shared/lib/utils/update-background/updateWeatherBackground';
 import NaviBar from '../widgets/navibar/Navibar';
-import MainTemperature from '../widgets/mainTemperature/mainTemperature';
+import MainTemperature from '../widgets/mainTemperature/MainTemperature';
+import WeklyForecast from '../widgets/weklyForecast/WeklyForecast';
 import {WindDirection} from '../widgets/wind-direction/WindDirection';
 import DaylightInfo from '../widgets/daylight-info/DaylightInfo';
 import {DailyForecast} from '../features/weekleForecast/weekleForecast';
@@ -152,26 +153,6 @@ const MainPage = () => {
     [currentWeather, localTime, sr, ss],
   );
 
-  const renderItemWeeklyDay = ({item, index}: {item: [string, DailyForecast]; index: number}) => {
-    const [date, data] = item;
-    const dayLabel = getDayLabel(date, index);
-
-    return (
-      <View style={styles.weeklyForecastItem}>
-        <View style={styles.weeklyForecastTextGuidingItem}>
-          <Text style={styles.weeklyForecastDayLabel}>{dayLabel}</Text>
-          <View style={styles.separatorWidth} />
-          <Text style={styles.weeklyForecastDescription}>{data.description}</Text>
-        </View>
-        <View>
-          <Text style={styles.weeklyForecastTemp}>
-            {Math.round(data.temp_max)}° / {Math.round(data.temp_min)}°
-          </Text>
-        </View>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
@@ -185,24 +166,7 @@ const MainPage = () => {
         <View
           style={[styles.captureMainViewItem, {height: screenHeight + insets.top + insets.bottom}]}>
           <MainTemperature currentWeather={currentWeather} city={city} errorStatus={errorStatus} />
-
-          {/* Модуль с прогнозом погоды на 6 дней */}
-          <View style={styles.weeklyForecastContainer}>
-            <Text style={styles.weeklyForecastHeader}>Прогноз на 6 дней</Text>
-            {forecast ? (
-              <FlatList
-                data={forecast ? Object.entries(forecast) : []}
-                keyExtractor={([date]) => date}
-                renderItem={renderItemWeeklyDay}
-                showsVerticalScrollIndicator={false}
-                nestedScrollEnabled={true}
-              />
-            ) : (
-              <View style={styles.weeklyForecastContainerPlug}>
-                <Text style={styles.textIndicator}>Нет данных о прогнозе</Text>
-              </View>
-            )}
-          </View>
+          <WeklyForecast forecast={forecast} />
         </View>
         {/* Блок с дополнительными погодными данными*/}
         <View style={styles.gridContainer}>
