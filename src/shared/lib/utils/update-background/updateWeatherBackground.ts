@@ -1,4 +1,4 @@
-import WeatherImages from '../types/WeatherImages';
+import WeatherImages from '../../../globalTypes/WeatherImages';
 
 export const getIconWeatherBg = (
   weatherCode: number,
@@ -48,7 +48,7 @@ export const getIconWeatherBg = (
     } else if (weatherCode === 802) {
       bgImage = isNight ? weatherObj.night.ночноеНебоСОблаками : weatherObj.облачно;
     } else {
-      bgImage = weatherObj.rain.пасмурно;
+      bgImage = isNight ? weatherObj.пасмурноНочью : weatherObj.rain.пасмурно;
     }
   }
 

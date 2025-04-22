@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, StatusBar} from 'react-native';
-import {getCity} from '../assets/utils/storageUtils';
-import NaviBarProps from '../types/NaviBarProps';
-import SvgSettings from './icons/SvgSettings';
-import ModalSettings from './modalWindow/ModalSettings';
-import ModalSelectCity from './modalWindow/ModalSelectCity';
-import {FONT} from '../assets/colorTheme';
+import {getCity} from '../../app/storageUtils';
+import NaviBarProps from './NaviBarProps';
+import SvgSettings from '../../shared/ui/icons/SvgSettings';
+import ModalSettings from '../../shared/components/modals/settings/ModalSettings';
+import ModalSelectCity from '../../shared/components/modals/selectCity/ModalSelectCity';
+import {FONT} from '../../app/colorTheme';
 
 const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);

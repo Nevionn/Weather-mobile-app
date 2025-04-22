@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Svg, {Circle, Path} from 'react-native-svg';
-import DaylightInfoProps from '../types/DaylightInfoProps';
-import {COLOR, FONT} from '../assets/colorTheme';
+import DaylightInfoProps from './DaylightInfoProps';
+import {COLOR, FONT} from '../../app/colorTheme';
 
 const parseTime = (time: string): number => {
   const [hours, minutes] = time.split(':').map(Number);
@@ -56,9 +56,8 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 144,
-    width: '90%',
+    width: '91%',
     alignItems: 'center',
-    marginHorizontal: 18,
     marginTop: 5,
     marginBottom: 20,
     borderRadius: 10,

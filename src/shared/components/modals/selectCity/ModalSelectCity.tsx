@@ -1,28 +1,13 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  FlatList,
-} from 'react-native';
-import {
-  loadFavoriteCities,
-  uploadFavoriteCities,
-} from '../../assets/utils/storageUtils';
-import {COLOR, FONT} from '../../assets/colorTheme';
-import ModalAddCityProps from '../../types/ModalAddCityProps';
-import cityData from '../../assets/city.json';
-import SvgFavorites from '../icons/SvgFavorites';
-import SvgNotMarkFavorites from '../icons/SvgNotMarkFavorites';
+import {StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, FlatList} from 'react-native';
+import {loadFavoriteCities, uploadFavoriteCities} from '../../../../app/storageUtils';
+import {COLOR, FONT} from '../../../../app/colorTheme';
+import ModalAddCityProps from './ModalAddCityProps';
+import cityData from '../../../../entities/city/model/city.json';
+import SvgFavorites from '../../../ui/icons/SvgFavorites';
+import SvgNotMarkFavorites from '../../../ui/icons/SvgNotMarkFavorites';
 
-const ModalSelectCity: React.FC<ModalAddCityProps> = ({
-  isVisible,
-  onClose,
-  onCitySelect,
-}) => {
+const ModalSelectCity: React.FC<ModalAddCityProps> = ({isVisible, onClose, onCitySelect}) => {
   const [searchText, setSearchText] = useState('');
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
   const [favoriteCities, setFavoriteCities] = useState<string[]>([]);
@@ -53,9 +38,7 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
   const updateFilteredCities = (text: string) => {
     setSearchText(text);
 
-    const searchResult = cities.filter(city =>
-      city.toLowerCase().includes(text.toLowerCase()),
-    );
+    const searchResult = cities.filter(city => city.toLowerCase().includes(text.toLowerCase()));
 
     // Разделение на избранные и обычные
     const sortedCities = [
@@ -91,18 +74,10 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
     ({item}: {item: string}) => {
       return (
         <>
-          <TouchableOpacity
-            style={styles.buttonCity}
-            onPress={() => handleCitySelect(item)}>
+          <TouchableOpacity style={styles.buttonCity} onPress={() => handleCitySelect(item)}>
             <Text style={styles.cityText}>{item}</Text>
-            <TouchableOpacity
-              onPress={() => toggleFavorite(item)}
-              style={styles.buttomFavorites}>
-              {favoriteCities.includes(item) ? (
-                <SvgFavorites />
-              ) : (
-                <SvgNotMarkFavorites />
-              )}
+            <TouchableOpacity onPress={() => toggleFavorite(item)} style={styles.buttomFavorites}>
+              {favoriteCities.includes(item) ? <SvgFavorites /> : <SvgNotMarkFavorites />}
             </TouchableOpacity>
           </TouchableOpacity>
         </>
@@ -113,11 +88,7 @@ const ModalSelectCity: React.FC<ModalAddCityProps> = ({
 
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isVisible}
-        onRequestClose={onClose}>
+      <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={onClose}>
         <View style={styles.modalBackground}>
           <View style={styles.modalView}>
             <Text style={styles.textHead}>Выберите город</Text>
