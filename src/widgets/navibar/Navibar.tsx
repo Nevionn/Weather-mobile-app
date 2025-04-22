@@ -4,7 +4,7 @@ import {getCity} from '../../app/storageUtils';
 import NaviBarProps from './NaviBarProps';
 import SvgSettings from '../../shared/ui/icons/SvgSettings';
 import ModalSettings from '../../shared/components/modals/settings/ModalSettings';
-import ModalSelectCity from '../../shared/components/modals/select-city/ModalSelectCity';
+import ModalSelectCity from '../../shared/components/modals/selectCity/ModalSelectCity';
 import {FONT} from '../../app/colorTheme';
 
 const NaviBar: React.FC<NaviBarProps> = ({onCitySelect}) => {

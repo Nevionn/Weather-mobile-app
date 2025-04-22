@@ -21,14 +21,13 @@ import {getIconWeatherBg} from '../shared/lib/utils/update-background/updateWeat
 import NaviBar from '../widgets/navibar/Navibar';
 import MainTemperature from '../widgets/mainTemperature/MainTemperature';
 import WeklyForecast from '../widgets/weklyForecast/WeklyForecast';
-import {WindDirection} from '../widgets/wind-direction/WindDirection';
+import {WindDirection} from '../widgets/windDirection/WindDirection';
 import AdditionalData from '../widgets/additionalDataBlock/AdditionalData';
-import DaylightInfo from '../widgets/daylight-info/DaylightInfo';
+import DaylightInfo from '../widgets/daylightInfo/DaylightInfo';
 import {DailyForecast} from '../features/weekleForecast/weekleForecast';
 import {getDaylightDuration} from '../features/dailyLightDuration/dailyLightDuration';
 import {fetchAndProcessForecast} from '../features/weekleForecast/weekleForecast';
 import {convertTimeStamp} from '../features/converTime/converTimeStamp';
-import {getDayLabel} from '../features/weekleForecast/weekleForecast';
 import getWeather from '../features/forecast/forecast';
 
 const MainPage = () => {
