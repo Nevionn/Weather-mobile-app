@@ -56,9 +56,8 @@ const DaylightInfo: React.FC<DaylightInfoProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 144,
-    width: '90%',
+    width: '91%',
     alignItems: 'center',
-    marginHorizontal: 18,
     marginTop: 5,
     marginBottom: 20,
     borderRadius: 10,
