@@ -1,4 +1,4 @@
-# Open Source Project by Nevionn
+# Weather mobile app
 
 Мобильное приложения для отображения погоды
 
@@ -34,7 +34,7 @@ npm install
 
 npx react-native start
 
-запуск на андроид: a
+запуск на андроид
 ```
 
 ## ССЫЛКИ
