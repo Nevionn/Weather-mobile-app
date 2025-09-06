@@ -2,9 +2,11 @@
 
 Мобильное приложения для отображения погоды
 
-<div align="center" style="display: flex; align-items: center;">
-  <img src="./src/image/weather_app_preview.jpg" alt="App preview" width="300" height="300">
-</div>
+<p align="center">
+ <img src="./preview/preview_1.jpg" alt="App preview1" width="200">
+ <img src="./preview/preview_2.jpg" alt="App preview2" width="200">
+ <img src="./preview/preview_3.jpg" alt="App preview2" width="200">
+</p>
 
 # Стек технологий
 
@@ -13,6 +15,9 @@
   <span style="margin: 0 10px; font-size: 24px;"> </span>
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="Python Logo" width="100" height="100">
 </div>
+
+- "react": "18.2.0",
+- "react-native": "0.74.2",
 
 # Установка апк файла 📦
 
