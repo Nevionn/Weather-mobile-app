@@ -26,7 +26,7 @@
 # Установка из исходников на android
 
 ```bash
-git clone https://gitlab.com/web4450122/weather-mobile-app.git
+git clone https://github.com/Nevionn/Weather-mobile-app.git
 
 cd weather-mobile-app
 
